@@ -1,0 +1,74 @@
+<html lang="en"><head><meta content="text/html; charset=UTF-8" http-equiv="content-type" /><meta charset="UTF-8" /><meta name="description" /><meta content="aws clojure java" name="keywords" /><meta content="Ram Krishnan" name="author" /><link href="/assets/favicon.ico" rel="icon" type="image/x-icon" /><link href="/assets/favicon.ico" rel="shortcut icon" type="image/x-icon" /><link href="/default.css" rel="stylesheet" type="text/css" /><link href="/rss-feed" rel="alternate" title="kriyative" type="application/rss+xml" /><link href="http://fonts.googleapis.com/css?family=Snowburst+One" rel="stylesheet" type="text/css" /><link href="http://kriyative.github.com/2009/06/11/cynojure-aws/" rel="canonical" /><title>cynojure.aws -- amazon web services from clojure</title></head><body><header id="banner"><div class="sleeve"><hgroup id="nameplate"><h1 id="title"><a href="/">kriyative</a></h1><h2 id="description"></h2></hgroup><nav id="toc"><ul id="menu"><li class="menu-item"><a href="/archives">Archives</a></li><li class="menu-item"><a href="/tags">Tags</a></li><li class="menu-item"><a href="/rss-feed">Subscribe</a></li></ul></nav></div></header><div id="main"><div class="sleeve"><div id="content"><article class="post format-standard"><header class="post-header"><h1 class="post-title">cynojure.aws -- amazon web services from clojure</h1><p class="post-meta">Posted on 11 Jun 2009</p></header><div class="post-content">
+<p>I've been using Amazon EC2, S3, and SQS services in various projects
+at work. For one project, I needed to build a little tool that
+integrated SQS and S3 services, and I decided to build it in
+Clojure. In the course of building the tool, I learned a bit about the
+various open source Java libraries for working with Amazon AWS, and
+the issues with integrating them with Clojure.
+</p>
+<p>
+The libraries I used are:
+</p>
+<ul>
+<li><a href="https://jets3t.dev.java.net/">jets3t</a> &ndash; S3 interface
+</li>
+<li><a href="http://code.google.com/p/typica/">typica</a> &ndash; SQS and EC2 interface
+</li>
+<li>Apache <a href="http://hc.apache.org/httpclient-3.x/">commons-httpclient</a> and associated dependencies
+</li>
+<li><a href="http://jdbc.postgresql.org/">postgres jdbc driver</a>
+</li>
+</ul>
+
+
+<p>
+Having been away from Java development for some time now, I'd
+forgotten about the convoluted mess of Classpaths and Class loaders. I
+had a "crash" refresher course in the last week. And, it's all still a
+bloody mess. I did come across one-jar, which made it pretty easy to
+package up the various jar dependencies into a single deliverable jar
+file.
+</p>
+<p>
+In the end, the tool worked out well and served its purpose. Plus, it
+was rewarding to be able to write code like this:
+</p>
+<pre class="example">
+(defun process-loop [:key
+                     aws-access-key
+                     aws-secret-key
+                     geo-db-path
+                     [message-count 5]
+                     [sleep 5000]
+                     sqs-queue]
+  (with-geo-service (geo-get-service :path geo-db-path)
+    (with-sqs-queue (sqs-get-queue aws-access-key aws-secret-key sqs-queue)
+      (with-connection *db*
+        (let [process (fn [msgs]
+                        (if (empty? msgs)
+                          (Thread/sleep sleep)
+                          (try
+                            (transaction
+                             (doseq [msg msgs] (process-message msg)))
+                            (doseq [msg msgs] (sqs-delete-message msg))
+                            (catch java.sql.BatchUpdateException ex
+                              (println "* process error:"
+                                       (.getNextException ex))))))]
+          (while true
+            (try
+              (process (sqs-receive-messages message-count))
+              (catch Exception ex
+                (println "* error:" ex)))))))))
+</pre>
+
+
+<p>
+and know it's running on the JVM.
+</p>
+<p>
+I've committed some of the code for the Amazon integration into the
+cynojure git repository, in case anyone else finds it useful.
+</p>
+<p>
+Harmony.
+</p></div><footer class="post-footer" /></article></div><aside id="sidebar"><section class="panel"><p><img id="profile-pic" src="http://www.gravatar.com/avatar/6dcf36ddd0aa73e04e125e3c10f6ff05.png" />Hi, I'm Ram Krishnan - a <a href="http://en.wikipedia.org/wiki/Lisp_(programming_language)">Lisp</a> programmer and software entrepreneur.</p></section><section class="panel"><h1>Links</h1><ul><li><a href="https://github.com/kriyative">Github</a></li><li><a href="http://www.ingeniousmonkey.com">IngeniousMonkey</a></li></ul><p>I sometimes post on <a href="http://twitter.com/funcall">twitter</a>.</p></section><section class="panel"><h1>Recent posts</h1><ul><li><a href="/2013/02/20/new-site/"> New Site</a></li><li><a href="/2012/07/28/emacs-for-clojure-2/">Emacs for Clojure - Part 2</a></li><li><a href="/2012/07/21/emacs-for-clojure-1/">Emacs for Clojure - Part 1</a></li><li><a href="/2011/03/26/ecl-for-ios-updated/">ECL for iOS update for ECL-11.1.1, Xocde 4, and SDK 4.3</a></li><li><a href="/2011/01/10/clojurejs-announcement/">clojurejs -- a Clojure (subset) to Javascript translator</a></li><li><a href="/2010/12/20/lisp-functions-ui-callbacks-ecl-ios/">Lisp functions as UI callbacks in ECL/iOS</a></li><li><a href="/2010/12/14/ecl-for-ios-updated/">ECL for iOS updated to work with SDK 4.2</a></li><li><a href="/2010/03/23/daily-org-agenda-reminder/">Displaying a daily Org-mode agenda reminder in Emacs</a></li><li><a href="/2010/02/10/snapshot-of-ecl-for-iphone/">Snapshot of ECL for iPhone</a></li><li><a href="/2010/01/29/my-other-lisp-blog/">my other lisp blog</a></li></ul></section></aside></div></div><footer id="addendum"><div class="sleeve"><p id="copyright">Copyright © 2012–2013 Ram Krishnan</p></div></footer></body></html>

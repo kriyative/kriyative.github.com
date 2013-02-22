@@ -1,0 +1,80 @@
+#+title: clojure, emacs, and javadocs
+#+tags: clojure emacs java javadoc slime
+
+In the course of my recent work, integrating various java libraries
+with clojure, I spent a lot of time going back and forth between emacs
+and firefox, just to read java api documentation. I even tried loading
+up the "All Classes" index from the java api docs in an emacs/w3m
+buffer and isearch-ing through it. It was a far from optimal
+experience, and I decided to hack something using clojure and slime.
+
+Bill Clementson had posted a great intro to javadoc and clojure/slime,
+but I was looking for something that wouldnt' require me to leave
+emacs just to read documentation, and that too java api docs.
+
+Ideally, I wanted to be able able to put the cursor on any java class
+symbol in a clojure-mode buffer in emacs, execute =M-x slime-javadoc=,
+and have the api documentation popup in an adjacent emacs window.
+
+Turns out the hardest part of implementing this was in resolving an
+unqualified class name to its fully qualified form, before looking up
+its documentation path. For example,
+
+: (ns example
+:   (:import (java.util UUID)))
+: 
+: (defn uuid []  (.toString (UUID/randomUUID)))
+
+Looking up the javadoc on UUID should really be on =java.util.UUID=,
+which clojure knows. So, the core of the hack is a clojure function,
+which takes the symbol at point ("UUID" in this case), and the current
+namespace ("example") and returns a fully qualified class name
+"java.util.UUID". That function, implemented as a slime command looks
+like the following:
+
+: (swank.commands/defslimefn resolve-symbol [sym ns-name]
+:   (when-let [the-class (ns-resolve (find-ns (symbol ns-name))
+:                                    (symbol sym))]
+:     (.getName the-class)))
+
+Now all we need is emacs to clean up the symbol at point, and call
+this function via slime.
+
+: (defun slime-javadoc (symbol-name)
+:   "Get JavaDoc documentation on Java class at point."
+:   (interactive (list (slime-read-symbol-name "JavaDoc info for: ")))
+:   (or symbol-name (error "No symbol given"))
+:   (let ((class-name (slime-eval
+:                      (list 'resolve-symbol
+:                            (first
+:                             (split-string (trim-trailing-dot symbol-name)
+:                                           "/"))
+:                            (slime-current-package)))))
+:     (if class-name
+:         (browse-url
+:          (concat (javadoc-root class-name)
+:                  (subst-char-in-string ?$
+:                                        ?.
+:                                        (subst-char-in-string ?.
+:                                                              ?/
+:                                                              class-name))
+:                  ".html"))
+:       (message "No javadoc found for %s" symbol-name))))
+
+The =javadoc-root= function is just a way to dispatch to different
+javadoc paths (local or online), based on the package names. For
+example, by defining:
+
+: (setq javadoc-alist
+:       '(("^\\(java[x]?\.\\|org\.ietf\.\\|org\.omg\.\\|org\.w3c\.\\|org\.xml\.\\)" .
+:          "file://opt/java/docs/api/")
+:         ("^org\.jets3t" . "file://opt/java/jets3t-0.7.0/api-docs/")
+:         ("^com\.xerox\.amazonws" . "file://opt/java/typica-1.5.2a/apidocs/")
+:         ("^org\.mortbay" . "http://www.mortbay.org/apidocs/")))
+
+Now, emacs/w3m will load the right documentation, based on the class
+package prefix.
+
+The code is available on [[http://github.com/kriyative/cynojure-swank/tree/master][github]].
+
+Unity.

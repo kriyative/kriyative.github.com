@@ -1,0 +1,59 @@
+#+title: cynojure.aws -- amazon web services from clojure
+#+tags: aws clojure java
+
+I've been using Amazon EC2, S3, and SQS services in various projects
+at work. For one project, I needed to build a little tool that
+integrated SQS and S3 services, and I decided to build it in
+Clojure. In the course of building the tool, I learned a bit about the
+various open source Java libraries for working with Amazon AWS, and
+the issues with integrating them with Clojure.
+
+The libraries I used are:
+
+  * [[https://jets3t.dev.java.net/][jets3t]] -- S3 interface
+  * [[http://code.google.com/p/typica/][typica]] -- SQS and EC2 interface
+  * Apache [[http://hc.apache.org/httpclient-3.x/][commons-httpclient]] and associated dependencies
+  * [[http://jdbc.postgresql.org/][postgres jdbc driver]]
+
+Having been away from Java development for some time now, I'd
+forgotten about the convoluted mess of Classpaths and Class loaders. I
+had a "crash" refresher course in the last week. And, it's all still a
+bloody mess. I did come across one-jar, which made it pretty easy to
+package up the various jar dependencies into a single deliverable jar
+file.
+
+In the end, the tool worked out well and served its purpose. Plus, it
+was rewarding to be able to write code like this:
+
+: (defun process-loop [:key
+:                      aws-access-key
+:                      aws-secret-key
+:                      geo-db-path
+:                      [message-count 5]
+:                      [sleep 5000]
+:                      sqs-queue]
+:   (with-geo-service (geo-get-service :path geo-db-path)
+:     (with-sqs-queue (sqs-get-queue aws-access-key aws-secret-key sqs-queue)
+:       (with-connection *db*
+:         (let [process (fn [msgs]
+:                         (if (empty? msgs)
+:                           (Thread/sleep sleep)
+:                           (try
+:                             (transaction
+:                              (doseq [msg msgs] (process-message msg)))
+:                             (doseq [msg msgs] (sqs-delete-message msg))
+:                             (catch java.sql.BatchUpdateException ex
+:                               (println "* process error:"
+:                                        (.getNextException ex))))))]
+:           (while true
+:             (try
+:               (process (sqs-receive-messages message-count))
+:               (catch Exception ex
+:                 (println "* error:" ex)))))))))
+
+and know it's running on the JVM.
+
+I've committed some of the code for the Amazon integration into the
+cynojure git repository, in case anyone else finds it useful.
+
+Harmony.

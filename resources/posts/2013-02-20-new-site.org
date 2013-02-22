@@ -1,0 +1,12 @@
+#+title:  New Site
+#+tags: clojure lisp
+
+This is my shiny new site hosted on github.com. I used to previously
+blog at [[http://funcall.posterous.com][funcall.posterous.com]] and [[http://cynojure.posterous.com][cynojure.posterous.com]], but I think
+[[http://github.com][github]] may be a more natural fit for my edit and publish workflow.
+After all, most of my professional and hobbyist programming work lives
+here, so why not my blog.
+
+Incidentally, I'm using [[http://orgmode.org/][org-mode]] in [[http://www.gnu.org/software/emacs/][Emacs]] to author the posts and a
+modified version of the [[http://nakkaya.com/static.html][static]] blog generation tool to generate the
+HTML and RSS.

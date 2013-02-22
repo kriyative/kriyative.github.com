@@ -1,0 +1,13 @@
+#+title: ECL on iPhone update
+#+tags: common-lisp ecl ios iphone
+
+I've just checked in a significant set of changes to the
+[[http://github.com/kriyative/ecl-iphone-builder][ecl-iphone-builder]] repository, incuding the following updates:
+
+- builds with ECL 9.12.3
+- requires the CVS head version of the Boehm Weiss collector
+- smoother build process (should "just work")
+- better SLIME integration (with :spawn communication style as the default)
+- expanded `eclshell' example (more goodies to follow)
+
+As always feedback and bug reports are appreciated.

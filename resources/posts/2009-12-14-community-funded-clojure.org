@@ -1,0 +1,11 @@
+#+title: community funded clojure
+#+tags: clojure community
+
+Rich Hickey [[http://groups.google.com/group/clojure/browse_frm/thread/cc77df25e98ce46b][posted]] a compelling message about funding the future
+development of Clojure.
+
+I donated, and urge all Lispers to consider the same. Clojure maybe
+one of the best things to happen to Lisp in a long while, and it and
+Rich are most deserving of our continued support.
+
+Donate at [[http://clojure.org][clojure.org]].

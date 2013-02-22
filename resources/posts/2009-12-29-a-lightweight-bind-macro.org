@@ -1,0 +1,59 @@
+#+title: A lightweight `bind' macro
+#+tags: clojure common-lisp lisp macros
+
+In my recent work I found myself writing a lot of code that looked
+like the following:
+
+: (destructuring-bind (x y)
+:     point
+:   (destructuring-bind (x1 y1 w h)
+:       frame
+:     (let ((x2 (+ x1 w))
+:           (y2 (+ y1 h)))
+:       (and (>= x x1) (<= x x2) (>= y y1) (<= y y2)))))
+
+The above example is a bit contrived, for effect, but hopefully
+conveys the general idea.
+
+What I wanted was a Clojure style `let' which could destructure
+inline. There was one Common Lisp implementation
+(http://common-lisp.net/project/metabang-bind/), which had some nice
+features, but it was bit much for my needs. So I came up with my own
+lightweight =bind= macro (see below), which lets me rewrite the above
+example as:
+
+: (bind (((x y) point)
+:        ((x1 y1 w h) frame)
+:        (x2 (+ x1 w))
+:        (y2 (+ y1 h)))
+:   (and (>= x x1) (<= x x2) (>= y y1) (<= y y2)))
+
+Way better, IMHO.
+
+Oh, here's the `bind' macro in its entirety:
+
+: (defmacro bind (clauses &body body)
+:   "This macro combines the behaviour of the forms `let*', `destructuring-bind',
+: and `multiple-value-bind', permitting the following style of binding form:
+:  
+:   (bind (((:values m n) (values 10 20))
+:          ((a b &key (c 10)) '(1 2))
+:          (x 5))
+:     (+ x a b c m n))
+:   => 48
+:  
+: This is a more limited and lightweight implementation of some ideas from
+: metabang-bind (http://common-lisp.net/project/metabang-bind/)."
+:   (cond
+:     ((null clauses) `(progn ,@body))
+:     ((and (listp (caar clauses)) (eq (caaar clauses) :values))
+:      `(multiple-value-bind ,(cdaar clauses)
+:           ,@(cdar clauses)
+:         (bind ,(cdr clauses) ,@body)))
+:     ((listp (caar clauses))
+:      `(destructuring-bind ,(caar clauses)
+:           ,@(cdar clauses)
+:         (bind ,(cdr clauses) ,@body)))
+:     (t
+:      `(let (,(car clauses))
+:         (bind ,(cdr clauses) ,@body)))))

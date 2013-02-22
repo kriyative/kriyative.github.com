@@ -1,0 +1,19 @@
+#+title: ECL for iOS update for ECL-11.1.1, Xocde 4, and SDK 4.3
+#+tags: common-lisp ecl ecl-ios ios ipad iphone lisp
+
+I've committed a new branch of ECL for iOS, which now requires
+ECL-11.1.1 (latest stable), and produces functioning device binaries
+for armv6 and armv7 architectures using Xcode 4 and SDK 4.3. This
+release has been tested on iPhone and iPad devices running iOS 4.3.1.
+
+Please refer to the updated README for further details.
+
+https://github.com/kriyative/ecl-iphone-builder/tree/elf
+
+Please note that the earlier release branch `dragon' has also been
+updated to work with Xcode 4, and SDK 4.3. However, it continues to be
+based on ECL-10.4.1.
+
+https://github.com/kriyative/ecl-iphone-builder/tree/dragon
+
+Many thanks to [[http://mclide.in-progress.com/][Terje Norderhaug]] for his help with this update.

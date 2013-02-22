@@ -1,0 +1,95 @@
+<html lang="en"><head><meta content="text/html; charset=UTF-8" http-equiv="content-type" /><meta charset="UTF-8" /><meta name="description" /><meta name="keywords" /><meta content="Ram Krishnan" name="author" /><link href="/assets/favicon.ico" rel="icon" type="image/x-icon" /><link href="/assets/favicon.ico" rel="shortcut icon" type="image/x-icon" /><link href="/default.css" rel="stylesheet" type="text/css" /><link href="/rss-feed" rel="alternate" title="kriyative" type="application/rss+xml" /><link href="http://fonts.googleapis.com/css?family=Snowburst+One" rel="stylesheet" type="text/css" /><title>Archives</title></head><body><header id="banner"><div class="sleeve"><hgroup id="nameplate"><h1 id="title"><a href="/">kriyative</a></h1><h2 id="description"></h2></hgroup><nav id="toc"><ul id="menu"><li class="menu-item"><a href="/archives">Archives</a></li><li class="menu-item"><a href="/tags">Tags</a></li><li class="menu-item"><a href="/rss-feed">Subscribe</a></li></ul></nav></div></header><div id="main"><div class="sleeve"><div id="content"><article class="post format-standard"><header class="post-header"><h1 class="post-title"><a href="/2009/12/29/a-lightweight-bind-macro/">A lightweight `bind' macro</a></h1><p class="post-meta">Posted on 29 Dec 2009</p></header><div class="post-content">
+<p>In my recent work I found myself writing a lot of code that looked
+like the following:
+</p>
+<pre class="example">
+(destructuring-bind (x y)
+    point
+  (destructuring-bind (x1 y1 w h)
+      frame
+    (let ((x2 (+ x1 w))
+          (y2 (+ y1 h)))
+      (and (&gt;= x x1) (&lt;= x x2) (&gt;= y y1) (&lt;= y y2)))))
+</pre>
+
+
+<p>
+The above example is a bit contrived, for effect, but hopefully
+conveys the general idea.
+</p>
+<p>
+What I wanted was a Clojure style `let' which could destructure
+inline. There was one Common Lisp implementation
+(<a href="http://common-lisp.net/project/metabang-bind/">http://common-lisp.net/project/metabang-bind/</a>), which had some nice
+features, but it was bit much for my needs. So I came up with my own
+lightweight <code>bind</code> macro (see below), which lets me rewrite the above
+example as:
+</p>
+<pre class="example">
+(bind (((x y) point)
+       ((x1 y1 w h) frame)
+       (x2 (+ x1 w))
+       (y2 (+ y1 h)))
+  (and (&gt;= x x1) (&lt;= x x2) (&gt;= y y1) (&lt;= y y2)))
+</pre>
+
+
+<p>
+Way better, IMHO.
+</p>
+<p>
+Oh, here's the `bind' macro in its entirety:
+</p>
+<pre class="example">
+(defmacro bind (clauses &amp;body body)
+  "This macro combines the behaviour of the forms `let*', `destructuring-bind',
+and `multiple-value-bind', permitting the following style of binding form:
+ 
+  (bind (((:values m n) (values 10 20))
+         ((a b &amp;key (c 10)) '(1 2))
+         (x 5))
+    (+ x a b c m n))
+  =&gt; 48
+ 
+This is a more limited and lightweight implementation of some ideas from
+metabang-bind (http://common-lisp.net/project/metabang-bind/)."
+  (cond
+    ((null clauses) `(progn ,@body))
+    ((and (listp (caar clauses)) (eq (caaar clauses) :values))
+     `(multiple-value-bind ,(cdaar clauses)
+          ,@(cdar clauses)
+        (bind ,(cdr clauses) ,@body)))
+    ((listp (caar clauses))
+     `(destructuring-bind ,(caar clauses)
+          ,@(cdar clauses)
+        (bind ,(cdr clauses) ,@body)))
+    (t
+     `(let (,(car clauses))
+        (bind ,(cdr clauses) ,@body)))))
+</pre>
+
+</div><footer class="post-footer" /></article><article class="post format-standard"><header class="post-header"><h1 class="post-title"><a href="/2009/12/14/community-funded-clojure/">community funded clojure</a></h1><p class="post-meta">Posted on 14 Dec 2009</p></header><div class="post-content">
+<p>Rich Hickey <a href="http://groups.google.com/group/clojure/browse_frm/thread/cc77df25e98ce46b">posted</a> a compelling message about funding the future
+development of Clojure.
+</p>
+<p>
+I donated, and urge all Lispers to consider the same. Clojure maybe
+one of the best things to happen to Lisp in a long while, and it and
+Rich are most deserving of our continued support.
+</p>
+<p>
+Donate at <a href="http://clojure.org">clojure.org</a>.
+</p></div><footer class="post-footer" /></article><article class="post format-standard"><header class="post-header"><h1 class="post-title"><a href="/2009/12/12/ecl-on-iphone-redux/">ECL on iPhone (redux)</a></h1><p class="post-meta">Posted on 12 Dec 2009</p></header><div class="post-content">
+<p>A while ago Red Daly <a href="http://lambdajive.wordpress.com/2009/03/27/common-lisp-on-iphone-ecl-comes-through-at-last/">posted</a> about some great initial work he had done
+in porting ECL to the iPhone. I contacted him, and worked to clean up
+some of the external dependencies, and got ECL to run on the simulator
+and device (with SLIME). I put together an updated Git repo with all
+my changes, and finally got around to posting about it.
+</p>
+<p>
+<a href="http://github.com/kriyative/ecl-iphone-builder">http://github.com/kriyative/ecl-iphone-builder</a>
+</p>
+<p>
+Hopefully, this will be of use to others.
+</p>
+</div><footer class="post-footer" /></article></div><aside id="sidebar"><section class="panel"><p><img id="profile-pic" src="http://www.gravatar.com/avatar/6dcf36ddd0aa73e04e125e3c10f6ff05.png" />Hi, I'm Ram Krishnan - a <a href="http://en.wikipedia.org/wiki/Lisp_(programming_language)">Lisp</a> programmer and software entrepreneur.</p></section><section class="panel"><h1>Links</h1><ul><li><a href="https://github.com/kriyative">Github</a></li><li><a href="http://www.ingeniousmonkey.com">IngeniousMonkey</a></li></ul><p>I sometimes post on <a href="http://twitter.com/funcall">twitter</a>.</p></section><section class="panel"><h1>Recent posts</h1><ul><li><a href="/2013/02/20/new-site/"> New Site</a></li><li><a href="/2012/07/28/emacs-for-clojure-2/">Emacs for Clojure - Part 2</a></li><li><a href="/2012/07/21/emacs-for-clojure-1/">Emacs for Clojure - Part 1</a></li><li><a href="/2011/03/26/ecl-for-ios-updated/">ECL for iOS update for ECL-11.1.1, Xocde 4, and SDK 4.3</a></li><li><a href="/2011/01/10/clojurejs-announcement/">clojurejs -- a Clojure (subset) to Javascript translator</a></li><li><a href="/2010/12/20/lisp-functions-ui-callbacks-ecl-ios/">Lisp functions as UI callbacks in ECL/iOS</a></li><li><a href="/2010/12/14/ecl-for-ios-updated/">ECL for iOS updated to work with SDK 4.2</a></li><li><a href="/2010/03/23/daily-org-agenda-reminder/">Displaying a daily Org-mode agenda reminder in Emacs</a></li><li><a href="/2010/02/10/snapshot-of-ecl-for-iphone/">Snapshot of ECL for iPhone</a></li><li><a href="/2010/01/29/my-other-lisp-blog/">my other lisp blog</a></li></ul></section></aside></div></div><footer id="addendum"><div class="sleeve"><p id="copyright">Copyright © 2012–2013 Ram Krishnan</p></div></footer></body></html>

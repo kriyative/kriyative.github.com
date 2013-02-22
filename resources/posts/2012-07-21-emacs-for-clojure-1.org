@@ -1,0 +1,120 @@
+#+title: Emacs for Clojure - Part 1
+#+tags: clojure emacs
+
+This is a brief overview of the way I work in Clojure using Emacs -
+almost exclusively. Obviously, Emacs is not the only way to interact
+with Clojure, but it can be a pretty seamless and efficient
+environment for Clojure, once you become familiar with the powerful
+extensibility and "mouse-free" efficiency of Emacs.
+
+Also, since Emacs uses Lisp as its extension language, there's a lot
+of value for a Clojure/Lisp developer in learning and mastering the
+Emacs' ecosystem. I hope this series of posts will be helpful in that
+endeavour.
+
+There are lots of "getting started with Emacs" docs available online
+and on the web. The easiest one is the built-in [[http://git.savannah.gnu.org/cgit/emacs.git/plain/etc/tutorials/TUTORIAL?h=emacs-24][Tutorial]], which you
+can also bring up within Emacs with =C-h t= or =M-x
+help-with-tutorial=.  Other online references:
+
+1. [[http://www.gnu.org/software/emacs/tour/][A Guided Tour of Emacs]]
+
+2. [[http://www2.lib.uchicago.edu/keith/tcl-course/emacs-tutorial.html][A Tutorial Introduction to GNU Emacs]]
+
+
+For the most part, I'm going to assume you're using Emacs default key
+bindings, but the following customizations don't really depend on
+that.
+
+* Process
+
+My typical work-flow involves the following steps (but not necessarily
+in the same order always):
+
+: (loop []
+:   ;; Edit code/tests
+:   ;; Interactive development with REPL and tests
+:   ;; Look up documentation
+:   ;; Search and Navigate a code tree
+:   ;; Run batch tests
+:   ;; Merge commits and resolve conflicts in Git
+:   (recur))
+
+I'll try to cover each of these steps in detail over the course of the
+next few posts.
+
+* Clojure Mode Setup
+
+Like snowflakes and Sting albums, there are myriad ways of setting up
+the Clojure environment in Emacs, but essentially all of them should
+be doing something similar to the following:
+
+: (defun clojure-mode-hook ()
+:   (setq indent-tabs-mode nil
+:         clojure-mode-use-backtracking-indent t)
+:   (setup-clojure-indentation-rules))
+: (require 'clojure-mode)
+: (require 'clojure-test-mode)
+: (require 'swank-clojure)
+: (add-hook 'clojure-mode-hook 'clojure-mode-hook)
+: (add-hook 'clojure-mode-hook 'clojure-test-mode)
+
+If you are using Emacs 24 and have never setup Clojure-mode or SLIME
+before, check out the [[https://github.com/technomancy/emacs-starter-kit][emacs-starter-kit]].
+
+* Basic Editing
+
+It's good to get familiar with the basic cursor movement keys such as:
+
+| Keybinding | Command                  |
+|------------+--------------------------|
+| =C-n=      | =next-line=              |
+| =C-p=      | =previous-line=          |
+| =C-f=      | =forward-char=           |
+| =C-b=      | =backward-char=          |
+| =C-a=      | =move-beginning-of-line= |
+| =C-e=      | =move-end-of-line=       |
+
+There's been a lot of cursing and teeth gnashing about Emacs' default
+key bindings, but here are some of the benefits that I've come to
+appreciate over time:
+
+1. Clustering -- you can insert and move around with minimal physical
+   movement from the /home row/ of the keyboard.
+
+2. Easy to remember
+
+3. Work in =bash= and even on tty devices (never say never) - this is
+   particularly useful if you're planning to do some remote pairing
+   over =tmux= or =screen=
+
+And, there is always =C-h b= =describe-bindings= which will list the
+key bindings in any given buffer.
+
+Other useful basic key bindings:
+
+| Keybinding | Command            | Doc                                                                                                                                                                                          |
+|------------+--------------------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| =C-l=      | =recenter=         | redraw buffer with the current line at the vertical center of the window; one useful variation is to =C-u 0 C-l= which will redraw the buffer with the current line at the top of the window |
+| =C-SPC=    | =set-mark-command= | set the beginning of a copy/cut region, and move the cursor to the end of the region                                                                                                         |
+| =C-w=      | =kill-region=      | cut the contents of the selected region                                                                                                                                                      |
+| =M-w=      | =kill-ring-save=   | copy (not cut) the contents of the selected region                                                                                                                                           |
+| =C-y=      | =yank=             | paste the most recently copied/cut region at cursor point                                                                                                                                    |
+| =M-y=      | =yank-pop=         | when used after a =yank=, Emacs will replace the pasted region with older copied text cycling through the cut/copy history                                                                   |
+| =C-x r k=  | =kill-rectangle=   | mark a region as you would normally, but cut a rectangular sub-region. Useful when working with columns of data                                                                              |
+| =C-x r y=  | =yank-rectangle=   | paste the most recently killed rectangular region                                                                                                                                            |
+
+* Keyboard Macros
+
+We've all been in situations where we've had to fix up some literal
+data structure or otherwise munge code by repeating a set of editing
+keystrokes, either deleting, inserting or otherwise splicing
+text. Keyboard macros can quickly help automate some of this work.
+
+The basic principle is that you begin recording a macro =C-x (=
+=kmacro-start-macro=, perform the keyboard actions, and then end
+recording with =C-x )= =kmacro-end-macro=. You can then replay the
+macro using =C-x e= =kmacro-end-and-call-macro=. Also, check out
+=C-x C-k n= =kmacro-name-last-macro= for oft repeated macros.
+
+/Next post:/ REPL, SLIME and interactive programming.

@@ -1,0 +1,13 @@
+#+title: ECL on iPhone (redux)
+#+tags: common-lisp ecl ios iphone lisp
+
+A while ago Red Daly [[http://lambdajive.wordpress.com/2009/03/27/common-lisp-on-iphone-ecl-comes-through-at-last/][posted]] about some great initial work he had done
+in porting ECL to the iPhone. I contacted him, and worked to clean up
+some of the external dependencies, and got ECL to run on the simulator
+and device (with SLIME). I put together an updated Git repo with all
+my changes, and finally got around to posting about it.
+
+http://github.com/kriyative/ecl-iphone-builder
+
+Hopefully, this will be of use to others.
+

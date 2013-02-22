@@ -1,0 +1,12 @@
+#+title: cynojure - clojure library on github
+#+tags: clojure
+
+I finally got around to creating a repository for some of the Clojure
+code I'm developing on github. It's quite spare right now; just the
+Common Lisp like =defun= macro, a few odd helper functions, and the
+SQL query syntax I'd written about before.
+ 
+The repository is online at http://github.com/kriyative/cynojure/tree/master. 
+ 
+I'm not all that happy with the SQL macros, but haven't had a whole
+lot of time to play with it. I've been too distracted with real work.

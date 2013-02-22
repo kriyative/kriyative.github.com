@@ -1,0 +1,10 @@
+#+title: my other lisp blog
+#+tags: common-lisp ecl ios iphone lisp
+
+I haven't been working in Clojure for a couple of months now, hence
+the absence of new posts here.
+
+However, I have been posting some updates on my other Lisp related
+blog (yes, I have two Lisp blogs :) ... about my work in porting the
+Embedded Common Lisp system to the iPhone. Sound interesting, check it
+out at:

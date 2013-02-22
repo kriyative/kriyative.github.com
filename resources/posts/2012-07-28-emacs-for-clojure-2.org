@@ -1,0 +1,65 @@
+#+title: Emacs for Clojure - Part 2
+#+tags: clojure emacs
+
+This is the second in a two part post about a Clojure programmer
+workflow entirely within Emacs.
+
+* Editing Clojure
+
+Some useful navigation key bindings in Clojure-mode, actually any Lisp
+code editing mode in Emacs, are as follows:
+
+| Keybinding | Command                      |
+|------------+------------------------------|
+| =C-M-f=    | =forward-sexp=               |
+| =C-M-b=    | =backward-sexp=              |
+| =C-M-a=    | =beginning-of-defun=         |
+| =C-M-e=    | =end-of-defun=               |
+| =C-M-x=    | =slime-compile-defun=        |
+| =C-x C-e=  | =slime-eval-last-expression= |
+
+Some of these key bindings get redefined when a buffer is in
+=slime-mode= to SLIME enhanced equivalents, but mostly they behave the
+same.
+
+And, don't forget the exponential effect of the =C-u= prefix key.
+
+Some other key bindings that are also useful are:
+
+| Keybinding | Command       | Doc                                                                                                                                                                                         |
+|------------+---------------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| =C-M-q=    | =indent-sexp= | A lot of times when copying and pasting or otherwise modifying large blocks of s-expressions, the indentation of the code can get out of whack. =indent-sexp= can help restore the balance. |
+| =C-M-h=    | =mark-defun=  |                                                                                                                                                                                             |
+| =C-M-k=    | =kill-sexp=   |                                                                                                                                                                                             |
+
+Also worth knowing, the magic of /dynamic abbrevs/ bound to the
+@<code>M-/@</code> key binding. Dynamic abbrevs are a quick way to
+complete a long function or var name from a minimal prefix. It's very
+brute force (i.e, just searches for a match in all the open buffers),
+but since it's very fast, it comes in handy when you're working with
+partially evaluated Clojure code.
+
+
+* Clojure REPL
+
+Everything begins with a Clojure instance which has SWANK loaded.
+Again, there are lots of ways of starting one of these, and the most
+common use case is with a [[https://github.com/technomancy/leiningen/][Leiningen]] project setup. Setting up
+Leiningen is beyond the scope of this post, but the docs on
+Leiningen's github page are quite helpful in getting you started.
+
+Once Leiningen is setup and you have a =project.clj= file for your
+project, you can invoke =clojure-jack-in=.
+
+Once SLIME is connected, it's helpful to know the following commands:
+
+| Keybinding         | Command                      | Doc                                                                                                                               |
+|--------------------+------------------------------+-----------------------------------------------------------------------------------------------------------------------------------|
+|                    | =slime-repl=                 | This is a quick way to jump to the =*slime-repl clojure*= buffer.                                                                 |
+|                    | =slime-reset=                | When your SLIME connection goes out of whack.                                                                                     |
+| =C-M-i=            | =slime-complete-symbol=      |                                                                                                                                   |
+| =C-x e=            | =slime-eval-last-expression= | Makes every Clojure buffer into a REPL. Plus, it is very handy when iterating on tests.                                           |
+| =C-c C-c=, =C-M-x= | =slime-compile-defun=        | This is convenient for compiling a =defn= or other top-level form, without having to put the cursor at the end of the expression. |
+|                    | =slime-list-connections=     | If you find yourself having to connect to multiple SWANK servers this command is helpful in switching between them.               |
+|                    | =slime-list-threads=         | Show the list of scheduled JVM threads, and can provides an interactive way to kill running threads. Use with caution.            |
+

@@ -1,0 +1,33 @@
+#+title: Displaying a daily Org-mode agenda reminder in Emacs
+#+tags: emacs lisp org-mode
+
+Here's a simple hack to get an Org-mode agenda view to popup in an
+Emacs buffer, daily at a specified time.
+
+: (defvar daily-agenda-timer (parse-relative-time "9:00 am"))
+: ;; (decode-time daily-agenda-timer)
+:  
+: (defun show-daily-agenda ()
+:   (unless (time-less-p (current-time) daily-agenda-timer)
+:     (setq daily-agenda-timer (time-add daily-agenda-timer
+: 				       (seconds-to-time 86400)))
+:     (org-agenda-list)))
+:  
+: (add-hook 'display-time-hook 'show-daily-agenda)
+: (display-time)
+
+The =parse-relative-time= function helps in initializing the
+=daily-agenda-timer= using a human readable string.
+
+: (defun parse-relative-time (time-str)
+:   (destructuring-bind (sec min hour day month year dow dst zone)
+:       (parse-time-string time-str)
+:     (destructuring-bind (sec1 min1 hour1 day1 month1 year1 dow1 dst1 zone1)
+: 	(decode-time)
+:       (encode-time (or sec sec1)
+: 		   (or min min1)
+: 		   (or hour hour1)
+: 		   (or day day1)
+: 		   (or month month1)
+: 		   (or year year1)
+: 		   (or zone zone1)))))

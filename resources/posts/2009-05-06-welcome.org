@@ -1,0 +1,48 @@
+#+title: welcome to cynojure
+#+tags: clojure emacs lisp
+
+Welcome to cynojure -- a blog about [[http://clojure.org/][clojure]] -- a modern [[http://en.wikipedia.org/wiki/Lisp_%28programming_language%29][Lisp]]
+implementation.
+
+I've been hacking Lisp, professionally and as a hobbyist, for about
+eighteen years now. Starting with [[http://en.wikipedia.org/wiki/Emacs_Lisp][elisp]] and [[http://en.wikipedia.org/wiki/Scheme_%28programming_language%29][Scheme]], and then [[http://en.wikipedia.org/wiki/Common_Lisp][Common
+Lisp]] for the past eight years. At the risk of importing my CV into
+this post, I've worked in [[http://en.wikipedia.org/wiki/Smalltalk][Smalltalk]], Objective-C, Java; even some
+Cadence SKILL. More recently, I got to work on a reasonably extensive
+project in [[http://en.wikipedia.org/wiki/Erlang_%28programming_language%29][Erlang]]. Before you write me off as a mono-lingual snob, let
+me assure you I've had a fair amount of experience with C and its
+derivative family of languages as well. I just happen to be a bigger
+fan of Lisp, and functional programming in general; which leads me to
+clojure.
+
+I first heard about clojure a year back, and was very impressed with
+the design motivations of its creator, Rich Hickey. A pure functional
+Lisp with immutable data structures, STM, actors ... and, efficient
+Java interop! Sounded too good, so I had to check it out. Since then,
+I've been following the development of the language and its libraries,
+read the [[http://www.pragprog.com/titles/shcloj/programming-clojure][Programming Clojure]] book, and played with it enough to be
+somewhat productive.
+
+And, this week (May 4, 2009) Rich Hickey formally [[http://groups.google.com/group/clojure/msg/bcbdad671327d2f5][announced]] the
+release of Clojure 1.0, which is great news. Congratulations to Rich
+and all the other contributors. To mark this major milestone in
+Clojure's history, and to add my own little bit to its growth, I
+decided to blog about my experiences with clojure as I learn and apply
+it. Hopefully, my experiences will be of some use or entertainment to
+others :)
+
+Happy hacking.
+
+PS: About the name - cynojure is a play (in keeping with clojure
+tradition) on the word cynosure, which according to [[http://wordnetweb.princeton.edu/perl/webwn?s=cynosure][WordNet]] has the
+following meanings:
+
+#+BEGIN_QUOTE
+cynosure
+
+something that provides guidance (as Polaris guides mariners)
+
+something that strongly attracts attention and admiration
+#+END_QUOTE
+
+Perhaps a bit grandiose, but I thought it was suitable.

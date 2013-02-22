@@ -1,0 +1,35 @@
+#+title: Snapshot of ECL for iPhone
+#+tags: common-lisp ecl ios iphone
+
+I've uploaded a snapshot of fully patched ECL-9.12.3, and Boehm GC
+sources to help anyone trying to build this environment from
+scratch. I realize a lot of the external dependencies tend to be in
+flux, so hopefully this snapshot will provide a fully functional
+starting point.
+
+The snapshot is available at:
+http://github.com/kriyative/ecl-iphone-snapshot
+
+The snapshot includes:
+
+: README
+: build.sh
+: bdwgc/
+: ecl/
+: eclshell/
+: iphone/
+
+The bdwgc/ and ecl/ directories contain the patched sources for Boehm
+GC, and ECL 9.12.3. The eclshell/ folder has the sources for the
+sample iPhone app, including a snapshot of slime (CVS head as of
+2010-01-29).
+
+The iphone/ folder contains the built product -- a set of header and
+static library files built for the iPhone architecture. The
+iphone/universal/ folder contains `fat' versions of the libraries
+which maybe used with either simulator or device builds.
+
+As always, feedback and patches are welcome.
+
+UPDATE: I moved to a github repo for the snapshot as well. It's easier
+this way to track any patches that may arise.

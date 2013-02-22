@@ -1,0 +1,254 @@
+<html lang="en"><head><meta content="text/html; charset=UTF-8" http-equiv="content-type" /><meta charset="UTF-8" /><meta content="" name="description" /><meta name="keywords" /><meta content="Ram Krishnan" name="author" /><link href="/assets/favicon.ico" rel="icon" type="image/x-icon" /><link href="/assets/favicon.ico" rel="shortcut icon" type="image/x-icon" /><link href="/default.css" rel="stylesheet" type="text/css" /><link href="/rss-feed" rel="alternate" title="kriyative" type="application/rss+xml" /><link href="http://fonts.googleapis.com/css?family=Snowburst+One" rel="stylesheet" type="text/css" /><title></title></head><body><header id="banner"><div class="sleeve"><hgroup id="nameplate"><h1 id="title"><a href="/">kriyative</a></h1><h2 id="description"></h2></hgroup><nav id="toc"><ul id="menu"><li class="menu-item"><a href="/archives">Archives</a></li><li class="menu-item"><a href="/tags">Tags</a></li><li class="menu-item"><a href="/rss-feed">Subscribe</a></li></ul></nav></div></header><div id="main"><div class="sleeve"><div id="content"><article class="post format-standard"><header class="post-header"><h1 class="post-title"><a href="/2009/06/11/cynojure-aws/">cynojure.aws -- amazon web services from clojure</a></h1><p class="post-meta">Posted on 11 Jun 2009</p></header><div class="post-content">
+<p>I've been using Amazon EC2, S3, and SQS services in various projects
+at work. For one project, I needed to build a little tool that
+integrated SQS and S3 services, and I decided to build it in
+Clojure. In the course of building the tool, I learned a bit about the
+various open source Java libraries for working with Amazon AWS, and
+the issues with integrating them with Clojure.
+</p>
+<p>
+The libraries I used are:
+</p>
+<ul>
+<li><a href="https://jets3t.dev.java.net/">jets3t</a> &ndash; S3 interface
+</li>
+<li><a href="http://code.google.com/p/typica/">typica</a> &ndash; SQS and EC2 interface
+</li>
+<li>Apache <a href="http://hc.apache.org/httpclient-3.x/">commons-httpclient</a> and associated dependencies
+</li>
+<li><a href="http://jdbc.postgresql.org/">postgres jdbc driver</a>
+</li>
+</ul>
+
+
+<p>
+Having been away from Java development for some time now, I'd
+forgotten about the convoluted mess of Classpaths and Class loaders. I
+had a "crash" refresher course in the last week. And, it's all still a
+bloody mess. I did come across one-jar, which made it pretty easy to
+package up the various jar dependencies into a single deliverable jar
+file.
+</p>
+<p>
+In the end, the tool worked out well and served its purpose. Plus, it
+was rewarding to be able to write code like this:
+</p>
+<pre class="example">
+(defun process-loop [:key
+                     aws-access-key
+                     aws-secret-key
+                     geo-db-path
+                     [message-count 5]
+                     [sleep 5000]
+                     sqs-queue]
+  (with-geo-service (geo-get-service :path geo-db-path)
+    (with-sqs-queue (sqs-get-queue aws-access-key aws-secret-key sqs-queue)
+      (with-connection *db*
+        (let [process (fn [msgs]
+                        (if (empty? msgs)
+                          (Thread/sleep sleep)
+                          (try
+                            (transaction
+                             (doseq [msg msgs] (process-message msg)))
+                            (doseq [msg msgs] (sqs-delete-message msg))
+                            (catch java.sql.BatchUpdateException ex
+                              (println "* process error:"
+                                       (.getNextException ex))))))]
+          (while true
+            (try
+              (process (sqs-receive-messages message-count))
+              (catch Exception ex
+                (println "* error:" ex)))))))))
+</pre>
+
+
+<p>
+and know it's running on the JVM.
+</p>
+<p>
+I've committed some of the code for the Amazon integration into the
+cynojure git repository, in case anyone else finds it useful.
+</p>
+<p>
+Harmony.
+</p></div><footer class="post-footer" /></article><article class="post format-standard"><header class="post-header"><h1 class="post-title"><a href="/2009/06/08/cynojure/">cynojure - clojure library on github</a></h1><p class="post-meta">Posted on 08 Jun 2009</p></header><div class="post-content">
+<p>I finally got around to creating a repository for some of the Clojure
+code I'm developing on github. It's quite spare right now; just the
+Common Lisp like <code>defun</code> macro, a few odd helper functions, and the
+SQL query syntax I'd written about before.
+</p>
+<p> 
+The repository is online at <a href="http://github.com/kriyative/cynojure/tree/master">http://github.com/kriyative/cynojure/tree/master</a>. 
+</p>
+<p> 
+I'm not all that happy with the SQL macros, but haven't had a whole
+lot of time to play with it. I've been too distracted with real work.
+</p></div><footer class="post-footer" /></article><article class="post format-standard"><header class="post-header"><h1 class="post-title"><a href="/2009/05/08/sql-s-expressions/">sql and s-expressions</a></h1><p class="post-meta">Posted on 08 May 2009</p></header><div class="post-content">
+<p>On one of the Common Lisp projects I worked on (a very typical Web
+app), I used the CLSQL library to integrate with a Postgres
+database. CLSQL is itself an opensource version of the SQL package
+which is part of Lispworks. One of the more interesting features of
+this library was an s-expression based query language, which emitted
+SQL query strings behind the scenes. So, for example:
+</p>
+<pre class="example">
+(select [count 1]
+        :from '([person])
+        :where [and [= [role] +role-programmer+]
+                [&lt; [age] 30]))
+</pre>
+
+
+<p>
+would emit the following SQL (and actually runs the query):
+</p>
+<pre class="example">
+SELECT COUNT(1) FROM person WHERE (role = 1 AND age &lt; 30)
+</pre>
+
+
+<p>
+Nice. Just being able to write the WHERE clause as a readable
+s-expression makes CLSQL worthwhile. Of course, it does much more than
+just that.
+</p>
+<p>
+Anyway, Clojure has a library in clojure-contrib, for integrating with
+SQL databases using JDBC. But, as you can see from the examples on
+that wiki page, SELECT, INSERT and UPDATE more or less require hand
+built SQL query strings. So, I figured I'd try and emulate the CLSQL
+approach using Clojure macrology. Here's what I was able to do:
+</p>
+<pre class="example">
+(sql-select-stmt "count(1)"
+                 :from '(person)
+                 :where (sql-and (sql-= 'role +role-programmer+)
+                                 (sql-&lt; 'age 30)))
+</pre>
+
+
+<p>
+Not as concise as CLSQL (the "sql-" prefix interrupts the flow), but
+perhaps the best we can do, considering Clojure doesn't have
+programmable reader macros (at least not without serious
+hackery). CLSQL cleverly uses reader macros to do interesting things
+with expressions which are inside square brackets, like turning <code>[or ...]</code> into <code>(sql-or ...)</code>, and <code>[a-table-name]</code> into "a<sub>table</sub><sub>name</sub>"
+etc.
+</p>
+<p>
+Incidentally, <code>sql-select-stmt</code> doesn't run the query, just generates
+the query string, which can be passed to <code>with-results</code>, like so:
+</p>
+<pre class="example">
+(with-results rs
+  (sql-select-stmt "count(1)"
+                   :from from
+                   :where where)
+  (:count (first rs)))
+</pre>
+
+
+<p>
+The code for the sql macros is a bit long to insert here, so I'm
+thinking I'll create a <span style="text-decoration:underline;">cynojure</span> repo on github, and put all the
+various bits of clojure code I create in there. I'll post about that
+separately.
+</p>
+<p>
+Peace.
+</p></div><footer class="post-footer" /></article><article class="post format-standard"><header class="post-header"><h1 class="post-title"><a href="/2009/05/06/welcome/">welcome to cynojure</a></h1><p class="post-meta">Posted on 06 May 2009</p></header><div class="post-content">
+<p>Welcome to cynojure &ndash; a blog about <a href="http://clojure.org/">clojure</a> &ndash; a modern <a href="http://en.wikipedia.org/wiki/Lisp_(programming_language)">Lisp</a>
+implementation.
+</p>
+<p>
+I've been hacking Lisp, professionally and as a hobbyist, for about
+eighteen years now. Starting with <a href="http://en.wikipedia.org/wiki/Emacs_Lisp">elisp</a> and <a href="http://en.wikipedia.org/wiki/Scheme_(programming_language)">Scheme</a>, and then <a href="http://en.wikipedia.org/wiki/Common_Lisp">Common Lisp</a> for the past eight years. At the risk of importing my CV into
+this post, I've worked in <a href="http://en.wikipedia.org/wiki/Smalltalk">Smalltalk</a>, Objective-C, Java; even some
+Cadence SKILL. More recently, I got to work on a reasonably extensive
+project in <a href="http://en.wikipedia.org/wiki/Erlang_(programming_language)">Erlang</a>. Before you write me off as a mono-lingual snob, let
+me assure you I've had a fair amount of experience with C and its
+derivative family of languages as well. I just happen to be a bigger
+fan of Lisp, and functional programming in general; which leads me to
+clojure.
+</p>
+<p>
+I first heard about clojure a year back, and was very impressed with
+the design motivations of its creator, Rich Hickey. A pure functional
+Lisp with immutable data structures, STM, actors &hellip; and, efficient
+Java interop! Sounded too good, so I had to check it out. Since then,
+I've been following the development of the language and its libraries,
+read the <a href="http://www.pragprog.com/titles/shcloj/programming-clojure">Programming Clojure</a> book, and played with it enough to be
+somewhat productive.
+</p>
+<p>
+And, this week (May 4, 2009) Rich Hickey formally <a href="http://groups.google.com/group/clojure/msg/bcbdad671327d2f5">announced</a> the
+release of Clojure 1.0, which is great news. Congratulations to Rich
+and all the other contributors. To mark this major milestone in
+Clojure's history, and to add my own little bit to its growth, I
+decided to blog about my experiences with clojure as I learn and apply
+it. Hopefully, my experiences will be of some use or entertainment to
+others :)
+</p>
+<p>
+Happy hacking.
+</p>
+<p>
+PS: About the name - cynojure is a play (in keeping with clojure
+tradition) on the word cynosure, which according to <a href="http://wordnetweb.princeton.edu/perl/webwn?s=cynosure">WordNet</a> has the
+following meanings:
+</p>
+<blockquote>
+
+<p>cynosure
+</p>
+<p>
+something that provides guidance (as Polaris guides mariners)
+</p>
+<p>
+something that strongly attracts attention and admiration
+</p>
+</blockquote>
+
+
+<p>
+Perhaps a bit grandiose, but I thought it was suitable.
+</p></div><footer class="post-footer" /></article><article class="post format-standard"><header class="post-header"><h1 class="post-title"><a href="/2009/05/06/keyword-args-in-clojure/">keyword args in clojure</a></h1><p class="post-meta">Posted on 06 May 2009</p></header><div class="post-content">
+<p>I like the keyword args support in Common Lisp. So, when I learned
+that clojure didn't support keyword args in the base language, I was a
+bit disappointed. But, with clojure's support for destructuring and
+macros, it should be easy to build keyword args &hellip; right?
+</p>
+<p>
+Rich Hickey posted a simple example on the clojure mailing list, which
+I adapted slightly to my taste:
+</p>
+<pre class="example">
+(defmacro defun [sym args &amp; body]
+  (let [[pargs [_ &amp; kargs]] (split-with (fn [x] (not (= x '&amp;key))) args)
+        gkeys (gensym "gkeys__")
+        letk (fn [k]
+               (let [[nm val] (if (vector? k) k [k])
+                     kname (keyword (name nm))]
+                 `(~nm (or (~gkeys ~kname) ~val))))]
+    `(defn ~sym [~@pargs &amp; k#]
+       (let [~gkeys (apply hash-map k#)
+             ~@(apply concat (map letk kargs))]
+         ~@body))))
+</pre>
+
+
+<p>
+After which:
+</p>
+<pre class="example">
+(defun foo [a b &amp;key c [d 5]]
+  [a b c d])
+
+user&gt; (foo 1 2 :c 10)
+[1 2 10 5]
+</pre>
+
+
+<p>
+Joy.
+</p></div><footer class="post-footer" /></article><div class="pager-right"><a href="/latest-posts/1/">Newer Entries &raquo;</a></div></div><aside id="sidebar"><section class="panel"><p><img id="profile-pic" src="http://www.gravatar.com/avatar/6dcf36ddd0aa73e04e125e3c10f6ff05.png" />Hi, I'm Ram Krishnan - a <a href="http://en.wikipedia.org/wiki/Lisp_(programming_language)">Lisp</a> programmer and software entrepreneur.</p></section><section class="panel"><h1>Links</h1><ul><li><a href="https://github.com/kriyative">Github</a></li><li><a href="http://www.ingeniousmonkey.com">IngeniousMonkey</a></li></ul><p>I sometimes post on <a href="http://twitter.com/funcall">twitter</a>.</p></section><section class="panel"><h1>Recent posts</h1><ul><li><a href="/2013/02/20/new-site/"> New Site</a></li><li><a href="/2012/07/28/emacs-for-clojure-2/">Emacs for Clojure - Part 2</a></li><li><a href="/2012/07/21/emacs-for-clojure-1/">Emacs for Clojure - Part 1</a></li><li><a href="/2011/03/26/ecl-for-ios-updated/">ECL for iOS update for ECL-11.1.1, Xocde 4, and SDK 4.3</a></li><li><a href="/2011/01/10/clojurejs-announcement/">clojurejs -- a Clojure (subset) to Javascript translator</a></li><li><a href="/2010/12/20/lisp-functions-ui-callbacks-ecl-ios/">Lisp functions as UI callbacks in ECL/iOS</a></li><li><a href="/2010/12/14/ecl-for-ios-updated/">ECL for iOS updated to work with SDK 4.2</a></li><li><a href="/2010/03/23/daily-org-agenda-reminder/">Displaying a daily Org-mode agenda reminder in Emacs</a></li><li><a href="/2010/02/10/snapshot-of-ecl-for-iphone/">Snapshot of ECL for iPhone</a></li><li><a href="/2010/01/29/my-other-lisp-blog/">my other lisp blog</a></li></ul></section></aside></div></div><footer id="addendum"><div class="sleeve"><p id="copyright">Copyright © 2012–2013 Ram Krishnan</p></div></footer></body></html>

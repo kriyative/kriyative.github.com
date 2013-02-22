@@ -1,0 +1,57 @@
+#+title: sql and s-expressions
+#+tags: clojure sql
+
+On one of the Common Lisp projects I worked on (a very typical Web
+app), I used the CLSQL library to integrate with a Postgres
+database. CLSQL is itself an opensource version of the SQL package
+which is part of Lispworks. One of the more interesting features of
+this library was an s-expression based query language, which emitted
+SQL query strings behind the scenes. So, for example:
+
+: (select [count 1]
+:         :from '([person])
+:         :where [and [= [role] +role-programmer+]
+:                 [< [age] 30]))
+
+would emit the following SQL (and actually runs the query):
+
+: SELECT COUNT(1) FROM person WHERE (role = 1 AND age < 30)
+
+Nice. Just being able to write the WHERE clause as a readable
+s-expression makes CLSQL worthwhile. Of course, it does much more than
+just that.
+
+Anyway, Clojure has a library in clojure-contrib, for integrating with
+SQL databases using JDBC. But, as you can see from the examples on
+that wiki page, SELECT, INSERT and UPDATE more or less require hand
+built SQL query strings. So, I figured I'd try and emulate the CLSQL
+approach using Clojure macrology. Here's what I was able to do:
+
+: (sql-select-stmt "count(1)"
+:                  :from '(person)
+:                  :where (sql-and (sql-= 'role +role-programmer+)
+:                                  (sql-< 'age 30)))
+
+Not as concise as CLSQL (the "sql-" prefix interrupts the flow), but
+perhaps the best we can do, considering Clojure doesn't have
+programmable reader macros (at least not without serious
+hackery). CLSQL cleverly uses reader macros to do interesting things
+with expressions which are inside square brackets, like turning =[or
+...]= into =(sql-or ...)=, and =[a-table-name]= into "a_table_name"
+etc.
+
+Incidentally, =sql-select-stmt= doesn't run the query, just generates
+the query string, which can be passed to =with-results=, like so:
+
+: (with-results rs
+:   (sql-select-stmt "count(1)"
+:                    :from from
+:                    :where where)
+:   (:count (first rs)))
+
+The code for the sql macros is a bit long to insert here, so I'm
+thinking I'll create a _cynojure_ repo on github, and put all the
+various bits of clojure code I create in there. I'll post about that
+separately.
+
+Peace.

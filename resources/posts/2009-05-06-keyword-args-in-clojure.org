@@ -1,0 +1,32 @@
+#+title: keyword args in clojure
+#+tags: clojure common-lisp macros
+
+I like the keyword args support in Common Lisp. So, when I learned
+that clojure didn't support keyword args in the base language, I was a
+bit disappointed. But, with clojure's support for destructuring and
+macros, it should be easy to build keyword args ... right?
+
+Rich Hickey posted a simple example on the clojure mailing list, which
+I adapted slightly to my taste:
+
+: (defmacro defun [sym args & body]
+:   (let [[pargs [_ & kargs]] (split-with (fn [x] (not (= x '&key))) args)
+:         gkeys (gensym "gkeys__")
+:         letk (fn [k]
+:                (let [[nm val] (if (vector? k) k [k])
+:                      kname (keyword (name nm))]
+:                  `(~nm (or (~gkeys ~kname) ~val))))]
+:     `(defn ~sym [~@pargs & k#]
+:        (let [~gkeys (apply hash-map k#)
+:              ~@(apply concat (map letk kargs))]
+:          ~@body))))
+
+After which:
+
+: (defun foo [a b &key c [d 5]]
+:   [a b c d])
+: 
+: user> (foo 1 2 :c 10)
+: [1 2 10 5]
+
+Joy.
