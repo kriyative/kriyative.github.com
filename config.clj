@@ -13,6 +13,7 @@
  :posts-per-page 5
  :blog-as-index true
  :emacs "/usr/local/bin/emacs"
+ :google-analytics-id  "UA-3082079-6"
  ;; :emacs-eval "(require 'org)"
  ;; :host - remote host to deploy to.
  ;; :user - remote username

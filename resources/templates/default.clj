@@ -36,7 +36,7 @@
        (map (fn [[label link]]
               [:li {:class "menu-item"}
                [:a {:href link} label]])
-            [;; ["About" "/about"]
+            [ ;; ["About" "/about"]
              ;; ["Contact" "/contact"]
              ["Archives" "/archives"]
              ["Tags" "/tags"]
@@ -103,12 +103,12 @@
          [:a {:href (format "%s/?url=ref" disqus-url)} "View the discussion thread"]]
         [:a {:href "http://disqus.com" :class "dsq-brlink"}
          "blog comments powered by "
-         [:span {:class "logo-disqus"} "Disqus"]]])])]
+         [:span {:class "logo-disqus"} "Disqus"]]])])
 
- (when-let [goog-id (:google-analytics-id config)]
-   [:script {:type "text/javascript"}
-    (format
-     "var _gaq = _gaq || [];
+  (when-let [goog-id (:google-analytics-id config)]
+    [:script {:type "text/javascript"}
+     (format
+      "var _gaq = _gaq || [];
        _gaq.push(['_setAccount' '%s']);
        _gaq.push(['_trackPageview']);
       (function() {
@@ -116,7 +116,7 @@
         ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
         (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(ga);
        })();"
-     goog-id)])]
+      goog-id)])]]
 
 #_
 (comment
