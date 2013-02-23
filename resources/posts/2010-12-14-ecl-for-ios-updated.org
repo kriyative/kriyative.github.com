@@ -1,5 +1,5 @@
 #+title: ECL for iOS updated to work with SDK 4.2
-#+tags:  common-lisp ecl ios ipad iphone
+#+tags: common-lisp ecl ios ipad iphone
 
 I've pushed a new branch (centaur) of the ECL for iOS project to
 github, which contains a number of fixes to get ECL compiled under the
