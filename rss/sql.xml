@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<rss version="2.0"><channel><title>sql posts from kriyative</title><link>http://kriyative.github.com</link><description></description><item><title>sql and s-expressions</title><link>http://kriyative.github.com/2009/05/08/sql-s-expressions/</link><description>
+&lt;p&gt;On one of the Common Lisp projects I worked on (a very typical Web
+app), I used the CLSQL library to integrate with a Postgres
+database. CLSQL is itself an opensource version of the SQL package
+which is part of Lispworks. One of the more interesting features of
+this library was an s-expression based query language, which emitted
+SQL query strings behind the scenes. So, for example:
+&lt;/p&gt;
+&lt;pre class=&quot;example&quot;&gt;
+(select [count 1]
+        :from '([person])
+        :where [and [= [role] +role-programmer+]
+                [&amp;lt; [age] 30]))
+&lt;/pre&gt;
+
+
+&lt;p&gt;
+would emit the following SQL (and actually runs the query):
+&lt;/p&gt;
+&lt;pre class=&quot;example&quot;&gt;
+SELECT COUNT(1) FROM person WHERE (role = 1 AND age &amp;lt; 30)
+&lt;/pre&gt;
+
+
+&lt;p&gt;
+Nice. Just being able to write the WHERE clause as a readable
+s-expression makes CLSQL worthwhile. Of course, it does much more than
+just that.
+&lt;/p&gt;
+&lt;p&gt;
+Anyway, Clojure has a library in clojure-contrib, for integrating with
+SQL databases using JDBC. But, as you can see from the examples on
+that wiki page, SELECT, INSERT and UPDATE more or less require hand
+built SQL query strings. So, I figured I'd try and emulate the CLSQL
+approach using Clojure macrology. Here's what I was able to do:
+&lt;/p&gt;
+&lt;pre class=&quot;example&quot;&gt;
+(sql-select-stmt &quot;count(1)&quot;
+                 :from '(person)
+                 :where (sql-and (sql-= 'role +role-programmer+)
+                                 (sql-&amp;lt; 'age 30)))
+&lt;/pre&gt;
+
+
+&lt;p&gt;
+Not as concise as CLSQL (the &quot;sql-&quot; prefix interrupts the flow), but
+perhaps the best we can do, considering Clojure doesn't have
+programmable reader macros (at least not without serious
+hackery). CLSQL cleverly uses reader macros to do interesting things
+with expressions which are inside square brackets, like turning &lt;code&gt;[or ...]&lt;/code&gt; into &lt;code&gt;(sql-or ...)&lt;/code&gt;, and &lt;code&gt;[a-table-name]&lt;/code&gt; into &quot;a&lt;sub&gt;table&lt;/sub&gt;&lt;sub&gt;name&lt;/sub&gt;&quot;
+etc.
+&lt;/p&gt;
+&lt;p&gt;
+Incidentally, &lt;code&gt;sql-select-stmt&lt;/code&gt; doesn't run the query, just generates
+the query string, which can be passed to &lt;code&gt;with-results&lt;/code&gt;, like so:
+&lt;/p&gt;
+&lt;pre class=&quot;example&quot;&gt;
+(with-results rs
+  (sql-select-stmt &quot;count(1)&quot;
+                   :from from
+                   :where where)
+  (:count (first rs)))
+&lt;/pre&gt;
+
+
+&lt;p&gt;
+The code for the sql macros is a bit long to insert here, so I'm
+thinking I'll create a &lt;span style=&quot;text-decoration:underline;&quot;&gt;cynojure&lt;/span&gt; repo on github, and put all the
+various bits of clojure code I create in there. I'll post about that
+separately.
+&lt;/p&gt;
+&lt;p&gt;
+Peace.
+&lt;/p&gt;</description></item></channel></rss>

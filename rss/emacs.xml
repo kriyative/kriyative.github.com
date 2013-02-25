@@ -1,17 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<rss version="2.0"><channel><title>kriyative</title><link>http://kriyative.github.com</link><description></description><item><title> New Site</title><link>http://kriyative.github.com/2013/02/20/new-site/</link><description>
-&lt;p&gt;This is my shiny new site hosted on github.com. I used to previously
-blog at &lt;a href=&quot;http://funcall.posterous.com&quot;&gt;funcall.posterous.com&lt;/a&gt; and &lt;a href=&quot;http://cynojure.posterous.com&quot;&gt;cynojure.posterous.com&lt;/a&gt;, but I think
-&lt;a href=&quot;http://github.com&quot;&gt;github&lt;/a&gt; may be a more natural fit for my edit and publish workflow.
-After all, most of my professional and hobbyist programming work lives
-here, so why not my blog.
-&lt;/p&gt;
-&lt;p&gt;
-Incidentally, I'm using &lt;a href=&quot;http://orgmode.org/&quot;&gt;org-mode&lt;/a&gt; in &lt;a href=&quot;http://www.gnu.org/software/emacs/&quot;&gt;Emacs&lt;/a&gt; to author the posts and a
-modified version of the &lt;a href=&quot;http://nakkaya.com/static.html&quot;&gt;static&lt;/a&gt; blog generation tool to generate the
-HTML and RSS.
-&lt;/p&gt;</description></item><item><title>Emacs for Clojure - Part 2</title><link>http://kriyative.github.com/2012/07/28/emacs-for-clojure-2/</link><description>
+<rss version="2.0"><channel><title>emacs posts from kriyative</title><link>http://kriyative.github.com</link><description></description><item><title>Emacs for Clojure - Part 2</title><link>http://kriyative.github.com/2012/07/28/emacs-for-clojure-2/</link><description>
 &lt;p&gt;This is the second in a two part post about a Clojure programmer
 workflow entirely within Emacs.
 &lt;/p&gt;
@@ -315,220 +304,7 @@ macro using &lt;code&gt;C-x e&lt;/code&gt; &lt;code&gt;kmacro-end-and-call-macro
 &lt;i&gt;Next post:&lt;/i&gt; REPL, SLIME and interactive programming.
 &lt;/p&gt;&lt;/div&gt;
 &lt;/div&gt;
-</description></item><item><title>ECL for iOS update for ECL-11.1.1, Xocde 4, and SDK 4.3</title><link>http://kriyative.github.com/2011/03/26/ecl-for-ios-updated/</link><description>
-&lt;p&gt;I've committed a new branch of ECL for iOS, which now requires
-ECL-11.1.1 (latest stable), and produces functioning device binaries
-for armv6 and armv7 architectures using Xcode 4 and SDK 4.3. This
-release has been tested on iPhone and iPad devices running iOS 4.3.1.
-&lt;/p&gt;
-&lt;p&gt;
-Please refer to the updated README for further details.
-&lt;/p&gt;
-&lt;p&gt;
-&lt;a href=&quot;https://github.com/kriyative/ecl-iphone-builder/tree/elf&quot;&gt;https://github.com/kriyative/ecl-iphone-builder/tree/elf&lt;/a&gt;
-&lt;/p&gt;
-&lt;p&gt;
-Please note that the earlier release branch `dragon' has also been
-updated to work with Xcode 4, and SDK 4.3. However, it continues to be
-based on ECL-10.4.1.
-&lt;/p&gt;
-&lt;p&gt;
-&lt;a href=&quot;https://github.com/kriyative/ecl-iphone-builder/tree/dragon&quot;&gt;https://github.com/kriyative/ecl-iphone-builder/tree/dragon&lt;/a&gt;
-&lt;/p&gt;
-&lt;p&gt;
-Many thanks to &lt;a href=&quot;http://mclide.in-progress.com/&quot;&gt;Terje Norderhaug&lt;/a&gt; for his help with this update.
-&lt;/p&gt;</description></item><item><title>clojurejs -- a Clojure (subset) to Javascript translator</title><link>http://kriyative.github.com/2011/01/10/clojurejs-announcement/</link><description>
-&lt;p&gt;I'm releasing &lt;a href=&quot;http://github.com/kriyative/clojurejs&quot;&gt;clojurejs&lt;/a&gt; &amp;ndash; a Clojure library for translating a Clojure
-subset language to Javascript. The code is on github reachable at the
-following link:
-&lt;/p&gt;
-&lt;p&gt;
-&lt;a href=&quot;http://github.com/kriyative/clojurejs&quot;&gt;http://github.com/kriyative/clojurejs&lt;/a&gt;
-&lt;/p&gt;
-&lt;p&gt;
-clojurejs is something I've been working on for a few weeks as part of
-a larger web app in Clojure. The code's a bit crufty (reflects my
-incremental discovery of the inconsistencies in Javascript), but
-functional and I wanted put something out there for people to check
-out. I welcome bug reports and feedback. It's been useful for my
-specific needs, and I'd be happy if it's even marginally useful to
-others.
-&lt;/p&gt;
-&lt;p&gt;
-I realize there are a number of other efforts to compile/translate
-Clojure (or other Lisp subset) to Javascript, but nothing quite fit my
-requirements, which prompted me to build clojurejs. Some useful
-aspects of clojurejs are:
-&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;Consistent scoping in let and loop/recur forms
-&lt;/li&gt;
-&lt;li&gt;Macros with defmacro
-&lt;/li&gt;
-&lt;li&gt;Implicit return from all forms
-&lt;/li&gt;
-&lt;li&gt;loop/recur translates to Javascript for loops
-&lt;/li&gt;
-&lt;li&gt;Translates Clojure vectors, strings, keywords, symbols and maps to
-  Javascript equivalents
-&lt;/li&gt;
-&lt;li&gt;dot form access to methods and properties
-&lt;/li&gt;
-&lt;/ul&gt;
-
-
-&lt;p&gt;
-Here's an example from the README:
-&lt;/p&gt;
-&lt;pre class=&quot;example&quot;&gt;
-(js
- (defn join [arr delim]
-   (loop [str (get arr 0)
-          i 1]
-     (if (&amp;lt; i (length arr))
-       (recur (+ str delim (get arr i))
-              (+ i 1))
-       str))))
-&lt;/pre&gt;
-
-
-&lt;p&gt;
-translates to the following Javascript:
-&lt;/p&gt;
-
-&lt;pre class=&quot;example&quot;&gt;
-join = function(arr, delim) {
-    return (function () {
-        for (var str = arr[0],i = 1; true;) {
-            if ((i &amp;lt; arr.length)) {
-                str = (str + delim + arr[i]);
-                i = (i + 1);
-                continue;
-            } else {
-                return str;
-            } break;
-        }
-    })();
-}
-&lt;/pre&gt;
-
-
-&lt;p&gt;
-Documentation is regrettably scarce, but there are more details in the
-README file, boot.cljs, and the unit tests. I hope to add more
-documentation and examples in the next few weeks. Stay tuned.
-&lt;/p&gt;</description></item><item><title>Lisp functions as UI callbacks in ECL/iOS</title><link>http://kriyative.github.com/2010/12/20/lisp-functions-ui-callbacks-ecl-ios/</link><description>
-&lt;p&gt;There's been a bit of recent interest in building &quot;real&quot; apps using
-ECL/iOS. While the `eclffi' sample code in the &lt;a href=&quot;https://github.com/kriyative/ecl-iphone-builder/tree/centaur&quot;&gt;ecl-iphone-builder&lt;/a&gt; repo
-included examples of how to create/call Objective-C classes/methods
-from Lisp, it was missing the glue to go the other way, which was
-necessary to implement callbacks in Lisp. I've pushed an update to
-github which adds this functionality.
-&lt;/p&gt;
-&lt;p&gt;
-As an example I created a subclass of &lt;code&gt;UIButton&lt;/code&gt; called &lt;code&gt;UIButtonCB&lt;/code&gt;
-with one instance var called &lt;code&gt;clickHandler&lt;/code&gt;, which can be set to a
-Lisp function pointer. The &lt;code&gt;UIButtonCB&lt;/code&gt; class wires the
-&lt;code&gt;UIControlEventTouchUpInside&lt;/code&gt; event to the specified handler function.
-&lt;/p&gt;
-&lt;pre class=&quot;example&quot;&gt;
-@implementation UIButtonCB
-
-- (id) initWithFrame: (CGRect) aFrame
-{
-    [super initWithFrame: aFrame];
-    clickHandler = Cnil;
-    [self addTarget: self action: @selector(clicked:) forControlEvents: UIControlEventTouchUpInside];
-    return self;
-}
-
-- (void) setClickHandler: (cl_object) fun
-{
-    register_cb(clickHandler, fun);
-}
-
-- (void) clicked: (id) sender
-{
-    if (Cnil != clickHandler) {
-        cl_funcall(2, clickHandler, ecl_foreign_data_ref_elt(&amp;amp;sender,ECL_FFI_POINTER_VOID));
-    }
-}
-
-- (void) dealloc
-{
-    remove_cb(clickHandler);
-    clickHandler = Cnil;
-    [super dealloc];
-}
-&lt;/pre&gt;
-
-
-&lt;p&gt;
-The call to &lt;code&gt;register_cb()&lt;/code&gt; ensures that the callback function is
-protected from GC, and &lt;code&gt;remove_cb()&lt;/code&gt; makes the function GC'able
-again. &lt;code&gt;UIButtonCB&lt;/code&gt; can now be wrapped in Lisp with the following FFI
-glue:
-&lt;/p&gt;
-&lt;pre class=&quot;example&quot;&gt;
-(defun set-click-handler (view fun)
-  (when fun
-    (c-fficall ((view :pointer-void)
-                ((make-callback-function fun) :object))
-        :void
-      &quot;[#0 setClickHandler: #1];&quot;)))
-
-(defun make-button (&amp;amp;rest init-view-args &amp;amp;key title title-color icon
-                    on-click (enabled t) &amp;amp;allow-other-keys)
-  (let ((view (make-view-instance &quot;UIButtonCB&quot; init-view-args)))
-    (set-click-handler view on-click)
-    (when icon (set-image view icon))
-    (when title (set-title view title))
-    (when title-color (set-title-color view title-color))
-    (set-enabled view enabled)
-    view))
-&lt;/pre&gt;
-
-
-&lt;p&gt;
-Here's an example of the Lisp code to create a button with an on-click
-callback, which updates a label:
-&lt;/p&gt;
-&lt;pre class=&quot;example&quot;&gt;
-(let ((n 0)
-      (label (make-label &quot;&quot; :frame '(10.0 50.0 300.0 35.0))))
-  (add-subview (key-window) label)
-  (add-subview (key-window)
-               (make-button :frame '(140 230 40 20)
-                            :title &quot;click&quot;
-                            :background-color (color-argb 1 0.5 0.5 0.5)
-                            :on-click (lambda (button)
-                                        (declare (ignore button))
-                                        (set-text label
-                                                  (format nil
-                                                          &quot;~d click~:p&quot;
-                                                          (incf n)))))))
-&lt;/pre&gt;
-
-
-&lt;p&gt;
-Obviously, this isn't a very sophisticated approach, but it's a
-start. It requires subclassing each UIControl or UIView to add the
-vars to store the Lisp callbacks. I'm sure there's ample room for
-abstracting or automating some of this boilerplate Objective C code.
-&lt;/p&gt;</description></item><item><title>ECL for iOS updated to work with SDK 4.2</title><link>http://kriyative.github.com/2010/12/14/ecl-for-ios-updated/</link><description>
-&lt;p&gt;I've pushed a new branch (centaur) of the ECL for iOS project to
-github, which contains a number of fixes to get ECL compiled under the
-latest 4.2 SDK from Apple. This release has been tested on iPhone and
-iPad devices running iOS 4.2 as well as the older 3.1.3. Please refer
-to the updated README for further details.
-&lt;/p&gt;
-&lt;p&gt;
-&lt;a href=&quot;http://github.com/kriyative/ecl-iphone-builder/tree/centaur&quot;&gt;http://github.com/kriyative/ecl-iphone-builder/tree/centaur&lt;/a&gt;
-&lt;/p&gt;
-&lt;p&gt;
-Many thanks to &lt;a href=&quot;http://mclide.in-progress.com/&quot;&gt;Terje Norderhaug&lt;/a&gt; and &lt;a href=&quot;http://www.facebook.com/profile.php?id=1019202159&quot;&gt;Anthony Fairchild&lt;/a&gt; for their bug
-reports and feedback.
-&lt;/p&gt;</description></item><item><title>Displaying a daily Org-mode agenda reminder in Emacs</title><link>http://kriyative.github.com/2010/03/23/daily-org-agenda-reminder/</link><description>
+</description></item><item><title>Displaying a daily Org-mode agenda reminder in Emacs</title><link>http://kriyative.github.com/2010/03/23/daily-org-agenda-reminder/</link><description>
 &lt;p&gt;Here's a simple hack to get an Org-mode agenda view to popup in an
 Emacs buffer, daily at a specified time.
 &lt;/p&gt;
@@ -566,55 +342,159 @@ The &lt;code&gt;parse-relative-time&lt;/code&gt; function helps in initializing 
                  (or zone zone1)))))
 &lt;/pre&gt;
 
-</description></item><item><title>Snapshot of ECL for iPhone</title><link>http://kriyative.github.com/2010/02/10/snapshot-of-ecl-for-iphone/</link><description>
-&lt;p&gt;I've uploaded a snapshot of fully patched ECL-9.12.3, and Boehm GC
-sources to help anyone trying to build this environment from
-scratch. I realize a lot of the external dependencies tend to be in
-flux, so hopefully this snapshot will provide a fully functional
-starting point.
+</description></item><item><title>clojure, emacs, and javadocs</title><link>http://kriyative.github.com/2009/06/21/clojure-emacs-and-javadocs/</link><description>
+&lt;p&gt;In the course of my recent work, integrating various java libraries
+with clojure, I spent a lot of time going back and forth between emacs
+and firefox, just to read java api documentation. I even tried loading
+up the &quot;All Classes&quot; index from the java api docs in an emacs/w3m
+buffer and isearch-ing through it. It was a far from optimal
+experience, and I decided to hack something using clojure and slime.
 &lt;/p&gt;
 &lt;p&gt;
-The snapshot is available at:
-&lt;a href=&quot;http://github.com/kriyative/ecl-iphone-snapshot&quot;&gt;http://github.com/kriyative/ecl-iphone-snapshot&lt;/a&gt;
+Bill Clementson had posted a great intro to javadoc and clojure/slime,
+but I was looking for something that wouldnt' require me to leave
+emacs just to read documentation, and that too java api docs.
 &lt;/p&gt;
 &lt;p&gt;
-The snapshot includes:
+Ideally, I wanted to be able able to put the cursor on any java class
+symbol in a clojure-mode buffer in emacs, execute &lt;code&gt;M-x slime-javadoc&lt;/code&gt;,
+and have the api documentation popup in an adjacent emacs window.
+&lt;/p&gt;
+&lt;p&gt;
+Turns out the hardest part of implementing this was in resolving an
+unqualified class name to its fully qualified form, before looking up
+its documentation path. For example,
 &lt;/p&gt;
 &lt;pre class=&quot;example&quot;&gt;
-README
-build.sh
-bdwgc/
-ecl/
-eclshell/
-iphone/
+(ns example
+  (:import (java.util UUID)))
+
+(defn uuid []  (.toString (UUID/randomUUID)))
 &lt;/pre&gt;
 
 
 &lt;p&gt;
-The bdwgc/ and ecl/ directories contain the patched sources for Boehm
-GC, and ECL 9.12.3. The eclshell/ folder has the sources for the
-sample iPhone app, including a snapshot of slime (CVS head as of
-2010-01-29).
+Looking up the javadoc on UUID should really be on &lt;code&gt;java.util.UUID&lt;/code&gt;,
+which clojure knows. So, the core of the hack is a clojure function,
+which takes the symbol at point (&quot;UUID&quot; in this case), and the current
+namespace (&quot;example&quot;) and returns a fully qualified class name
+&quot;java.util.UUID&quot;. That function, implemented as a slime command looks
+like the following:
+&lt;/p&gt;
+&lt;pre class=&quot;example&quot;&gt;
+(swank.commands/defslimefn resolve-symbol [sym ns-name]
+  (when-let [the-class (ns-resolve (find-ns (symbol ns-name))
+                                   (symbol sym))]
+    (.getName the-class)))
+&lt;/pre&gt;
+
+
+&lt;p&gt;
+Now all we need is emacs to clean up the symbol at point, and call
+this function via slime.
+&lt;/p&gt;
+&lt;pre class=&quot;example&quot;&gt;
+(defun slime-javadoc (symbol-name)
+  &quot;Get JavaDoc documentation on Java class at point.&quot;
+  (interactive (list (slime-read-symbol-name &quot;JavaDoc info for: &quot;)))
+  (or symbol-name (error &quot;No symbol given&quot;))
+  (let ((class-name (slime-eval
+                     (list 'resolve-symbol
+                           (first
+                            (split-string (trim-trailing-dot symbol-name)
+                                          &quot;/&quot;))
+                           (slime-current-package)))))
+    (if class-name
+        (browse-url
+         (concat (javadoc-root class-name)
+                 (subst-char-in-string ?$
+                                       ?.
+                                       (subst-char-in-string ?.
+                                                             ?/
+                                                             class-name))
+                 &quot;.html&quot;))
+      (message &quot;No javadoc found for %s&quot; symbol-name))))
+&lt;/pre&gt;
+
+
+&lt;p&gt;
+The &lt;code&gt;javadoc-root&lt;/code&gt; function is just a way to dispatch to different
+javadoc paths (local or online), based on the package names. For
+example, by defining:
+&lt;/p&gt;
+&lt;pre class=&quot;example&quot;&gt;
+(setq javadoc-alist
+      '((&quot;^\\(java[x]?\.\\|org\.ietf\.\\|org\.omg\.\\|org\.w3c\.\\|org\.xml\.\\)&quot; .
+         &quot;file://opt/java/docs/api/&quot;)
+        (&quot;^org\.jets3t&quot; . &quot;file://opt/java/jets3t-0.7.0/api-docs/&quot;)
+        (&quot;^com\.xerox\.amazonws&quot; . &quot;file://opt/java/typica-1.5.2a/apidocs/&quot;)
+        (&quot;^org\.mortbay&quot; . &quot;http://www.mortbay.org/apidocs/&quot;)))
+&lt;/pre&gt;
+
+
+&lt;p&gt;
+Now, emacs/w3m will load the right documentation, based on the class
+package prefix.
 &lt;/p&gt;
 &lt;p&gt;
-The iphone/ folder contains the built product &amp;ndash; a set of header and
-static library files built for the iPhone architecture. The
-iphone/universal/ folder contains `fat' versions of the libraries
-which maybe used with either simulator or device builds.
+The code is available on &lt;a href=&quot;http://github.com/kriyative/cynojure-swank/tree/master&quot;&gt;github&lt;/a&gt;.
 &lt;/p&gt;
 &lt;p&gt;
-As always, feedback and patches are welcome.
+Unity.
+&lt;/p&gt;</description></item><item><title>welcome to cynojure</title><link>http://kriyative.github.com/2009/05/06/welcome/</link><description>
+&lt;p&gt;Welcome to cynojure &amp;ndash; a blog about &lt;a href=&quot;http://clojure.org/&quot;&gt;clojure&lt;/a&gt; &amp;ndash; a modern &lt;a href=&quot;http://en.wikipedia.org/wiki/Lisp_(programming_language)&quot;&gt;Lisp&lt;/a&gt;
+implementation.
 &lt;/p&gt;
 &lt;p&gt;
-UPDATE: I moved to a github repo for the snapshot as well. It's easier
-this way to track any patches that may arise.
-&lt;/p&gt;</description></item><item><title>my other lisp blog</title><link>http://kriyative.github.com/2010/01/29/my-other-lisp-blog/</link><description>
-&lt;p&gt;I haven't been working in Clojure for a couple of months now, hence
-the absence of new posts here.
+I've been hacking Lisp, professionally and as a hobbyist, for about
+eighteen years now. Starting with &lt;a href=&quot;http://en.wikipedia.org/wiki/Emacs_Lisp&quot;&gt;elisp&lt;/a&gt; and &lt;a href=&quot;http://en.wikipedia.org/wiki/Scheme_(programming_language)&quot;&gt;Scheme&lt;/a&gt;, and then &lt;a href=&quot;http://en.wikipedia.org/wiki/Common_Lisp&quot;&gt;Common Lisp&lt;/a&gt; for the past eight years. At the risk of importing my CV into
+this post, I've worked in &lt;a href=&quot;http://en.wikipedia.org/wiki/Smalltalk&quot;&gt;Smalltalk&lt;/a&gt;, Objective-C, Java; even some
+Cadence SKILL. More recently, I got to work on a reasonably extensive
+project in &lt;a href=&quot;http://en.wikipedia.org/wiki/Erlang_(programming_language)&quot;&gt;Erlang&lt;/a&gt;. Before you write me off as a mono-lingual snob, let
+me assure you I've had a fair amount of experience with C and its
+derivative family of languages as well. I just happen to be a bigger
+fan of Lisp, and functional programming in general; which leads me to
+clojure.
 &lt;/p&gt;
 &lt;p&gt;
-However, I have been posting some updates on my other Lisp related
-blog (yes, I have two Lisp blogs :) &amp;hellip; about my work in porting the
-Embedded Common Lisp system to the iPhone. Sound interesting, check it
-out at:
+I first heard about clojure a year back, and was very impressed with
+the design motivations of its creator, Rich Hickey. A pure functional
+Lisp with immutable data structures, STM, actors &amp;hellip; and, efficient
+Java interop! Sounded too good, so I had to check it out. Since then,
+I've been following the development of the language and its libraries,
+read the &lt;a href=&quot;http://www.pragprog.com/titles/shcloj/programming-clojure&quot;&gt;Programming Clojure&lt;/a&gt; book, and played with it enough to be
+somewhat productive.
+&lt;/p&gt;
+&lt;p&gt;
+And, this week (May 4, 2009) Rich Hickey formally &lt;a href=&quot;http://groups.google.com/group/clojure/msg/bcbdad671327d2f5&quot;&gt;announced&lt;/a&gt; the
+release of Clojure 1.0, which is great news. Congratulations to Rich
+and all the other contributors. To mark this major milestone in
+Clojure's history, and to add my own little bit to its growth, I
+decided to blog about my experiences with clojure as I learn and apply
+it. Hopefully, my experiences will be of some use or entertainment to
+others :)
+&lt;/p&gt;
+&lt;p&gt;
+Happy hacking.
+&lt;/p&gt;
+&lt;p&gt;
+PS: About the name - cynojure is a play (in keeping with clojure
+tradition) on the word cynosure, which according to &lt;a href=&quot;http://wordnetweb.princeton.edu/perl/webwn?s=cynosure&quot;&gt;WordNet&lt;/a&gt; has the
+following meanings:
+&lt;/p&gt;
+&lt;blockquote&gt;
+
+&lt;p&gt;cynosure
+&lt;/p&gt;
+&lt;p&gt;
+something that provides guidance (as Polaris guides mariners)
+&lt;/p&gt;
+&lt;p&gt;
+something that strongly attracts attention and admiration
+&lt;/p&gt;
+&lt;/blockquote&gt;
+
+
+&lt;p&gt;
+Perhaps a bit grandiose, but I thought it was suitable.
 &lt;/p&gt;</description></item></channel></rss>

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<rss version="2.0"><channel><title>kriyative</title><link>http://kriyative.github.com</link><description></description><item><title> New Site</title><link>http://kriyative.github.com/2013/02/20/new-site/</link><description>
+<rss version="2.0"><channel><title>clojure posts from kriyative</title><link>http://kriyative.github.com</link><description></description><item><title> New Site</title><link>http://kriyative.github.com/2013/02/20/new-site/</link><description>
 &lt;p&gt;This is my shiny new site hosted on github.com. I used to previously
 blog at &lt;a href=&quot;http://funcall.posterous.com&quot;&gt;funcall.posterous.com&lt;/a&gt; and &lt;a href=&quot;http://cynojure.posterous.com&quot;&gt;cynojure.posterous.com&lt;/a&gt;, but I think
 &lt;a href=&quot;http://github.com&quot;&gt;github&lt;/a&gt; may be a more natural fit for my edit and publish workflow.
@@ -315,29 +315,7 @@ macro using &lt;code&gt;C-x e&lt;/code&gt; &lt;code&gt;kmacro-end-and-call-macro
 &lt;i&gt;Next post:&lt;/i&gt; REPL, SLIME and interactive programming.
 &lt;/p&gt;&lt;/div&gt;
 &lt;/div&gt;
-</description></item><item><title>ECL for iOS update for ECL-11.1.1, Xocde 4, and SDK 4.3</title><link>http://kriyative.github.com/2011/03/26/ecl-for-ios-updated/</link><description>
-&lt;p&gt;I've committed a new branch of ECL for iOS, which now requires
-ECL-11.1.1 (latest stable), and produces functioning device binaries
-for armv6 and armv7 architectures using Xcode 4 and SDK 4.3. This
-release has been tested on iPhone and iPad devices running iOS 4.3.1.
-&lt;/p&gt;
-&lt;p&gt;
-Please refer to the updated README for further details.
-&lt;/p&gt;
-&lt;p&gt;
-&lt;a href=&quot;https://github.com/kriyative/ecl-iphone-builder/tree/elf&quot;&gt;https://github.com/kriyative/ecl-iphone-builder/tree/elf&lt;/a&gt;
-&lt;/p&gt;
-&lt;p&gt;
-Please note that the earlier release branch `dragon' has also been
-updated to work with Xcode 4, and SDK 4.3. However, it continues to be
-based on ECL-10.4.1.
-&lt;/p&gt;
-&lt;p&gt;
-&lt;a href=&quot;https://github.com/kriyative/ecl-iphone-builder/tree/dragon&quot;&gt;https://github.com/kriyative/ecl-iphone-builder/tree/dragon&lt;/a&gt;
-&lt;/p&gt;
-&lt;p&gt;
-Many thanks to &lt;a href=&quot;http://mclide.in-progress.com/&quot;&gt;Terje Norderhaug&lt;/a&gt; for his help with this update.
-&lt;/p&gt;</description></item><item><title>clojurejs -- a Clojure (subset) to Javascript translator</title><link>http://kriyative.github.com/2011/01/10/clojurejs-announcement/</link><description>
+</description></item><item><title>clojurejs -- a Clojure (subset) to Javascript translator</title><link>http://kriyative.github.com/2011/01/10/clojurejs-announcement/</link><description>
 &lt;p&gt;I'm releasing &lt;a href=&quot;http://github.com/kriyative/clojurejs&quot;&gt;clojurejs&lt;/a&gt; &amp;ndash; a Clojure library for translating a Clojure
 subset language to Javascript. The code is on github reachable at the
 following link:
@@ -417,204 +395,342 @@ join = function(arr, delim) {
 Documentation is regrettably scarce, but there are more details in the
 README file, boot.cljs, and the unit tests. I hope to add more
 documentation and examples in the next few weeks. Stay tuned.
-&lt;/p&gt;</description></item><item><title>Lisp functions as UI callbacks in ECL/iOS</title><link>http://kriyative.github.com/2010/12/20/lisp-functions-ui-callbacks-ecl-ios/</link><description>
-&lt;p&gt;There's been a bit of recent interest in building &quot;real&quot; apps using
-ECL/iOS. While the `eclffi' sample code in the &lt;a href=&quot;https://github.com/kriyative/ecl-iphone-builder/tree/centaur&quot;&gt;ecl-iphone-builder&lt;/a&gt; repo
-included examples of how to create/call Objective-C classes/methods
-from Lisp, it was missing the glue to go the other way, which was
-necessary to implement callbacks in Lisp. I've pushed an update to
-github which adds this functionality.
-&lt;/p&gt;
-&lt;p&gt;
-As an example I created a subclass of &lt;code&gt;UIButton&lt;/code&gt; called &lt;code&gt;UIButtonCB&lt;/code&gt;
-with one instance var called &lt;code&gt;clickHandler&lt;/code&gt;, which can be set to a
-Lisp function pointer. The &lt;code&gt;UIButtonCB&lt;/code&gt; class wires the
-&lt;code&gt;UIControlEventTouchUpInside&lt;/code&gt; event to the specified handler function.
+&lt;/p&gt;</description></item><item><title>A lightweight `bind' macro</title><link>http://kriyative.github.com/2009/12/29/a-lightweight-bind-macro/</link><description>
+&lt;p&gt;In my recent work I found myself writing a lot of code that looked
+like the following:
 &lt;/p&gt;
 &lt;pre class=&quot;example&quot;&gt;
-@implementation UIButtonCB
-
-- (id) initWithFrame: (CGRect) aFrame
-{
-    [super initWithFrame: aFrame];
-    clickHandler = Cnil;
-    [self addTarget: self action: @selector(clicked:) forControlEvents: UIControlEventTouchUpInside];
-    return self;
-}
-
-- (void) setClickHandler: (cl_object) fun
-{
-    register_cb(clickHandler, fun);
-}
-
-- (void) clicked: (id) sender
-{
-    if (Cnil != clickHandler) {
-        cl_funcall(2, clickHandler, ecl_foreign_data_ref_elt(&amp;amp;sender,ECL_FFI_POINTER_VOID));
-    }
-}
-
-- (void) dealloc
-{
-    remove_cb(clickHandler);
-    clickHandler = Cnil;
-    [super dealloc];
-}
+(destructuring-bind (x y)
+    point
+  (destructuring-bind (x1 y1 w h)
+      frame
+    (let ((x2 (+ x1 w))
+          (y2 (+ y1 h)))
+      (and (&amp;gt;= x x1) (&amp;lt;= x x2) (&amp;gt;= y y1) (&amp;lt;= y y2)))))
 &lt;/pre&gt;
 
 
 &lt;p&gt;
-The call to &lt;code&gt;register_cb()&lt;/code&gt; ensures that the callback function is
-protected from GC, and &lt;code&gt;remove_cb()&lt;/code&gt; makes the function GC'able
-again. &lt;code&gt;UIButtonCB&lt;/code&gt; can now be wrapped in Lisp with the following FFI
-glue:
+The above example is a bit contrived, for effect, but hopefully
+conveys the general idea.
+&lt;/p&gt;
+&lt;p&gt;
+What I wanted was a Clojure style `let' which could destructure
+inline. There was one Common Lisp implementation
+(&lt;a href=&quot;http://common-lisp.net/project/metabang-bind/&quot;&gt;http://common-lisp.net/project/metabang-bind/&lt;/a&gt;), which had some nice
+features, but it was bit much for my needs. So I came up with my own
+lightweight &lt;code&gt;bind&lt;/code&gt; macro (see below), which lets me rewrite the above
+example as:
 &lt;/p&gt;
 &lt;pre class=&quot;example&quot;&gt;
-(defun set-click-handler (view fun)
-  (when fun
-    (c-fficall ((view :pointer-void)
-                ((make-callback-function fun) :object))
-        :void
-      &quot;[#0 setClickHandler: #1];&quot;)))
-
-(defun make-button (&amp;amp;rest init-view-args &amp;amp;key title title-color icon
-                    on-click (enabled t) &amp;amp;allow-other-keys)
-  (let ((view (make-view-instance &quot;UIButtonCB&quot; init-view-args)))
-    (set-click-handler view on-click)
-    (when icon (set-image view icon))
-    (when title (set-title view title))
-    (when title-color (set-title-color view title-color))
-    (set-enabled view enabled)
-    view))
+(bind (((x y) point)
+       ((x1 y1 w h) frame)
+       (x2 (+ x1 w))
+       (y2 (+ y1 h)))
+  (and (&amp;gt;= x x1) (&amp;lt;= x x2) (&amp;gt;= y y1) (&amp;lt;= y y2)))
 &lt;/pre&gt;
 
 
 &lt;p&gt;
-Here's an example of the Lisp code to create a button with an on-click
-callback, which updates a label:
+Way better, IMHO.
+&lt;/p&gt;
+&lt;p&gt;
+Oh, here's the `bind' macro in its entirety:
 &lt;/p&gt;
 &lt;pre class=&quot;example&quot;&gt;
-(let ((n 0)
-      (label (make-label &quot;&quot; :frame '(10.0 50.0 300.0 35.0))))
-  (add-subview (key-window) label)
-  (add-subview (key-window)
-               (make-button :frame '(140 230 40 20)
-                            :title &quot;click&quot;
-                            :background-color (color-argb 1 0.5 0.5 0.5)
-                            :on-click (lambda (button)
-                                        (declare (ignore button))
-                                        (set-text label
-                                                  (format nil
-                                                          &quot;~d click~:p&quot;
-                                                          (incf n)))))))
-&lt;/pre&gt;
-
-
-&lt;p&gt;
-Obviously, this isn't a very sophisticated approach, but it's a
-start. It requires subclassing each UIControl or UIView to add the
-vars to store the Lisp callbacks. I'm sure there's ample room for
-abstracting or automating some of this boilerplate Objective C code.
-&lt;/p&gt;</description></item><item><title>ECL for iOS updated to work with SDK 4.2</title><link>http://kriyative.github.com/2010/12/14/ecl-for-ios-updated/</link><description>
-&lt;p&gt;I've pushed a new branch (centaur) of the ECL for iOS project to
-github, which contains a number of fixes to get ECL compiled under the
-latest 4.2 SDK from Apple. This release has been tested on iPhone and
-iPad devices running iOS 4.2 as well as the older 3.1.3. Please refer
-to the updated README for further details.
-&lt;/p&gt;
-&lt;p&gt;
-&lt;a href=&quot;http://github.com/kriyative/ecl-iphone-builder/tree/centaur&quot;&gt;http://github.com/kriyative/ecl-iphone-builder/tree/centaur&lt;/a&gt;
-&lt;/p&gt;
-&lt;p&gt;
-Many thanks to &lt;a href=&quot;http://mclide.in-progress.com/&quot;&gt;Terje Norderhaug&lt;/a&gt; and &lt;a href=&quot;http://www.facebook.com/profile.php?id=1019202159&quot;&gt;Anthony Fairchild&lt;/a&gt; for their bug
-reports and feedback.
-&lt;/p&gt;</description></item><item><title>Displaying a daily Org-mode agenda reminder in Emacs</title><link>http://kriyative.github.com/2010/03/23/daily-org-agenda-reminder/</link><description>
-&lt;p&gt;Here's a simple hack to get an Org-mode agenda view to popup in an
-Emacs buffer, daily at a specified time.
-&lt;/p&gt;
-&lt;pre class=&quot;example&quot;&gt;
-(defvar daily-agenda-timer (parse-relative-time &quot;9:00 am&quot;))
-;; (decode-time daily-agenda-timer)
+(defmacro bind (clauses &amp;amp;body body)
+  &quot;This macro combines the behaviour of the forms `let*', `destructuring-bind',
+and `multiple-value-bind', permitting the following style of binding form:
  
-(defun show-daily-agenda ()
-  (unless (time-less-p (current-time) daily-agenda-timer)
-    (setq daily-agenda-timer (time-add daily-agenda-timer
-                                     (seconds-to-time 86400)))
-    (org-agenda-list)))
+  (bind (((:values m n) (values 10 20))
+         ((a b &amp;amp;key (c 10)) '(1 2))
+         (x 5))
+    (+ x a b c m n))
+  =&amp;gt; 48
  
-(add-hook 'display-time-hook 'show-daily-agenda)
-(display-time)
+This is a more limited and lightweight implementation of some ideas from
+metabang-bind (http://common-lisp.net/project/metabang-bind/).&quot;
+  (cond
+    ((null clauses) `(progn ,@body))
+    ((and (listp (caar clauses)) (eq (caaar clauses) :values))
+     `(multiple-value-bind ,(cdaar clauses)
+          ,@(cdar clauses)
+        (bind ,(cdr clauses) ,@body)))
+    ((listp (caar clauses))
+     `(destructuring-bind ,(caar clauses)
+          ,@(cdar clauses)
+        (bind ,(cdr clauses) ,@body)))
+    (t
+     `(let (,(car clauses))
+        (bind ,(cdr clauses) ,@body)))))
 &lt;/pre&gt;
 
-
+</description></item><item><title>community funded clojure</title><link>http://kriyative.github.com/2009/12/14/community-funded-clojure/</link><description>
+&lt;p&gt;Rich Hickey &lt;a href=&quot;http://groups.google.com/group/clojure/browse_frm/thread/cc77df25e98ce46b&quot;&gt;posted&lt;/a&gt; a compelling message about funding the future
+development of Clojure.
+&lt;/p&gt;
 &lt;p&gt;
-The &lt;code&gt;parse-relative-time&lt;/code&gt; function helps in initializing the
-&lt;code&gt;daily-agenda-timer&lt;/code&gt; using a human readable string.
+I donated, and urge all Lispers to consider the same. Clojure maybe
+one of the best things to happen to Lisp in a long while, and it and
+Rich are most deserving of our continued support.
+&lt;/p&gt;
+&lt;p&gt;
+Donate at &lt;a href=&quot;http://clojure.org&quot;&gt;clojure.org&lt;/a&gt;.
+&lt;/p&gt;</description></item><item><title>clojure, emacs, and javadocs</title><link>http://kriyative.github.com/2009/06/21/clojure-emacs-and-javadocs/</link><description>
+&lt;p&gt;In the course of my recent work, integrating various java libraries
+with clojure, I spent a lot of time going back and forth between emacs
+and firefox, just to read java api documentation. I even tried loading
+up the &quot;All Classes&quot; index from the java api docs in an emacs/w3m
+buffer and isearch-ing through it. It was a far from optimal
+experience, and I decided to hack something using clojure and slime.
+&lt;/p&gt;
+&lt;p&gt;
+Bill Clementson had posted a great intro to javadoc and clojure/slime,
+but I was looking for something that wouldnt' require me to leave
+emacs just to read documentation, and that too java api docs.
+&lt;/p&gt;
+&lt;p&gt;
+Ideally, I wanted to be able able to put the cursor on any java class
+symbol in a clojure-mode buffer in emacs, execute &lt;code&gt;M-x slime-javadoc&lt;/code&gt;,
+and have the api documentation popup in an adjacent emacs window.
+&lt;/p&gt;
+&lt;p&gt;
+Turns out the hardest part of implementing this was in resolving an
+unqualified class name to its fully qualified form, before looking up
+its documentation path. For example,
 &lt;/p&gt;
 &lt;pre class=&quot;example&quot;&gt;
-(defun parse-relative-time (time-str)
-  (destructuring-bind (sec min hour day month year dow dst zone)
-      (parse-time-string time-str)
-    (destructuring-bind (sec1 min1 hour1 day1 month1 year1 dow1 dst1 zone1)
-      (decode-time)
-      (encode-time (or sec sec1)
-                 (or min min1)
-                 (or hour hour1)
-                 (or day day1)
-                 (or month month1)
-                 (or year year1)
-                 (or zone zone1)))))
+(ns example
+  (:import (java.util UUID)))
+
+(defn uuid []  (.toString (UUID/randomUUID)))
 &lt;/pre&gt;
 
-</description></item><item><title>Snapshot of ECL for iPhone</title><link>http://kriyative.github.com/2010/02/10/snapshot-of-ecl-for-iphone/</link><description>
-&lt;p&gt;I've uploaded a snapshot of fully patched ECL-9.12.3, and Boehm GC
-sources to help anyone trying to build this environment from
-scratch. I realize a lot of the external dependencies tend to be in
-flux, so hopefully this snapshot will provide a fully functional
-starting point.
-&lt;/p&gt;
+
 &lt;p&gt;
-The snapshot is available at:
-&lt;a href=&quot;http://github.com/kriyative/ecl-iphone-snapshot&quot;&gt;http://github.com/kriyative/ecl-iphone-snapshot&lt;/a&gt;
-&lt;/p&gt;
-&lt;p&gt;
-The snapshot includes:
+Looking up the javadoc on UUID should really be on &lt;code&gt;java.util.UUID&lt;/code&gt;,
+which clojure knows. So, the core of the hack is a clojure function,
+which takes the symbol at point (&quot;UUID&quot; in this case), and the current
+namespace (&quot;example&quot;) and returns a fully qualified class name
+&quot;java.util.UUID&quot;. That function, implemented as a slime command looks
+like the following:
 &lt;/p&gt;
 &lt;pre class=&quot;example&quot;&gt;
-README
-build.sh
-bdwgc/
-ecl/
-eclshell/
-iphone/
+(swank.commands/defslimefn resolve-symbol [sym ns-name]
+  (when-let [the-class (ns-resolve (find-ns (symbol ns-name))
+                                   (symbol sym))]
+    (.getName the-class)))
 &lt;/pre&gt;
 
 
 &lt;p&gt;
-The bdwgc/ and ecl/ directories contain the patched sources for Boehm
-GC, and ECL 9.12.3. The eclshell/ folder has the sources for the
-sample iPhone app, including a snapshot of slime (CVS head as of
-2010-01-29).
+Now all we need is emacs to clean up the symbol at point, and call
+this function via slime.
+&lt;/p&gt;
+&lt;pre class=&quot;example&quot;&gt;
+(defun slime-javadoc (symbol-name)
+  &quot;Get JavaDoc documentation on Java class at point.&quot;
+  (interactive (list (slime-read-symbol-name &quot;JavaDoc info for: &quot;)))
+  (or symbol-name (error &quot;No symbol given&quot;))
+  (let ((class-name (slime-eval
+                     (list 'resolve-symbol
+                           (first
+                            (split-string (trim-trailing-dot symbol-name)
+                                          &quot;/&quot;))
+                           (slime-current-package)))))
+    (if class-name
+        (browse-url
+         (concat (javadoc-root class-name)
+                 (subst-char-in-string ?$
+                                       ?.
+                                       (subst-char-in-string ?.
+                                                             ?/
+                                                             class-name))
+                 &quot;.html&quot;))
+      (message &quot;No javadoc found for %s&quot; symbol-name))))
+&lt;/pre&gt;
+
+
+&lt;p&gt;
+The &lt;code&gt;javadoc-root&lt;/code&gt; function is just a way to dispatch to different
+javadoc paths (local or online), based on the package names. For
+example, by defining:
+&lt;/p&gt;
+&lt;pre class=&quot;example&quot;&gt;
+(setq javadoc-alist
+      '((&quot;^\\(java[x]?\.\\|org\.ietf\.\\|org\.omg\.\\|org\.w3c\.\\|org\.xml\.\\)&quot; .
+         &quot;file://opt/java/docs/api/&quot;)
+        (&quot;^org\.jets3t&quot; . &quot;file://opt/java/jets3t-0.7.0/api-docs/&quot;)
+        (&quot;^com\.xerox\.amazonws&quot; . &quot;file://opt/java/typica-1.5.2a/apidocs/&quot;)
+        (&quot;^org\.mortbay&quot; . &quot;http://www.mortbay.org/apidocs/&quot;)))
+&lt;/pre&gt;
+
+
+&lt;p&gt;
+Now, emacs/w3m will load the right documentation, based on the class
+package prefix.
 &lt;/p&gt;
 &lt;p&gt;
-The iphone/ folder contains the built product &amp;ndash; a set of header and
-static library files built for the iPhone architecture. The
-iphone/universal/ folder contains `fat' versions of the libraries
-which maybe used with either simulator or device builds.
+The code is available on &lt;a href=&quot;http://github.com/kriyative/cynojure-swank/tree/master&quot;&gt;github&lt;/a&gt;.
 &lt;/p&gt;
 &lt;p&gt;
-As always, feedback and patches are welcome.
+Unity.
+&lt;/p&gt;</description></item><item><title>cynojure.aws -- amazon web services from clojure</title><link>http://kriyative.github.com/2009/06/11/cynojure-aws/</link><description>
+&lt;p&gt;I've been using Amazon EC2, S3, and SQS services in various projects
+at work. For one project, I needed to build a little tool that
+integrated SQS and S3 services, and I decided to build it in
+Clojure. In the course of building the tool, I learned a bit about the
+various open source Java libraries for working with Amazon AWS, and
+the issues with integrating them with Clojure.
 &lt;/p&gt;
 &lt;p&gt;
-UPDATE: I moved to a github repo for the snapshot as well. It's easier
-this way to track any patches that may arise.
-&lt;/p&gt;</description></item><item><title>my other lisp blog</title><link>http://kriyative.github.com/2010/01/29/my-other-lisp-blog/</link><description>
-&lt;p&gt;I haven't been working in Clojure for a couple of months now, hence
-the absence of new posts here.
+The libraries I used are:
+&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&quot;https://jets3t.dev.java.net/&quot;&gt;jets3t&lt;/a&gt; &amp;ndash; S3 interface
+&lt;/li&gt;
+&lt;li&gt;&lt;a href=&quot;http://code.google.com/p/typica/&quot;&gt;typica&lt;/a&gt; &amp;ndash; SQS and EC2 interface
+&lt;/li&gt;
+&lt;li&gt;Apache &lt;a href=&quot;http://hc.apache.org/httpclient-3.x/&quot;&gt;commons-httpclient&lt;/a&gt; and associated dependencies
+&lt;/li&gt;
+&lt;li&gt;&lt;a href=&quot;http://jdbc.postgresql.org/&quot;&gt;postgres jdbc driver&lt;/a&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+
+
+&lt;p&gt;
+Having been away from Java development for some time now, I'd
+forgotten about the convoluted mess of Classpaths and Class loaders. I
+had a &quot;crash&quot; refresher course in the last week. And, it's all still a
+bloody mess. I did come across one-jar, which made it pretty easy to
+package up the various jar dependencies into a single deliverable jar
+file.
 &lt;/p&gt;
 &lt;p&gt;
-However, I have been posting some updates on my other Lisp related
-blog (yes, I have two Lisp blogs :) &amp;hellip; about my work in porting the
-Embedded Common Lisp system to the iPhone. Sound interesting, check it
-out at:
+In the end, the tool worked out well and served its purpose. Plus, it
+was rewarding to be able to write code like this:
+&lt;/p&gt;
+&lt;pre class=&quot;example&quot;&gt;
+(defun process-loop [:key
+                     aws-access-key
+                     aws-secret-key
+                     geo-db-path
+                     [message-count 5]
+                     [sleep 5000]
+                     sqs-queue]
+  (with-geo-service (geo-get-service :path geo-db-path)
+    (with-sqs-queue (sqs-get-queue aws-access-key aws-secret-key sqs-queue)
+      (with-connection *db*
+        (let [process (fn [msgs]
+                        (if (empty? msgs)
+                          (Thread/sleep sleep)
+                          (try
+                            (transaction
+                             (doseq [msg msgs] (process-message msg)))
+                            (doseq [msg msgs] (sqs-delete-message msg))
+                            (catch java.sql.BatchUpdateException ex
+                              (println &quot;* process error:&quot;
+                                       (.getNextException ex))))))]
+          (while true
+            (try
+              (process (sqs-receive-messages message-count))
+              (catch Exception ex
+                (println &quot;* error:&quot; ex)))))))))
+&lt;/pre&gt;
+
+
+&lt;p&gt;
+and know it's running on the JVM.
+&lt;/p&gt;
+&lt;p&gt;
+I've committed some of the code for the Amazon integration into the
+cynojure git repository, in case anyone else finds it useful.
+&lt;/p&gt;
+&lt;p&gt;
+Harmony.
+&lt;/p&gt;</description></item><item><title>cynojure - clojure library on github</title><link>http://kriyative.github.com/2009/06/08/cynojure/</link><description>
+&lt;p&gt;I finally got around to creating a repository for some of the Clojure
+code I'm developing on github. It's quite spare right now; just the
+Common Lisp like &lt;code&gt;defun&lt;/code&gt; macro, a few odd helper functions, and the
+SQL query syntax I'd written about before.
+&lt;/p&gt;
+&lt;p&gt; 
+The repository is online at &lt;a href=&quot;http://github.com/kriyative/cynojure/tree/master&quot;&gt;http://github.com/kriyative/cynojure/tree/master&lt;/a&gt;. 
+&lt;/p&gt;
+&lt;p&gt; 
+I'm not all that happy with the SQL macros, but haven't had a whole
+lot of time to play with it. I've been too distracted with real work.
+&lt;/p&gt;</description></item><item><title>sql and s-expressions</title><link>http://kriyative.github.com/2009/05/08/sql-s-expressions/</link><description>
+&lt;p&gt;On one of the Common Lisp projects I worked on (a very typical Web
+app), I used the CLSQL library to integrate with a Postgres
+database. CLSQL is itself an opensource version of the SQL package
+which is part of Lispworks. One of the more interesting features of
+this library was an s-expression based query language, which emitted
+SQL query strings behind the scenes. So, for example:
+&lt;/p&gt;
+&lt;pre class=&quot;example&quot;&gt;
+(select [count 1]
+        :from '([person])
+        :where [and [= [role] +role-programmer+]
+                [&amp;lt; [age] 30]))
+&lt;/pre&gt;
+
+
+&lt;p&gt;
+would emit the following SQL (and actually runs the query):
+&lt;/p&gt;
+&lt;pre class=&quot;example&quot;&gt;
+SELECT COUNT(1) FROM person WHERE (role = 1 AND age &amp;lt; 30)
+&lt;/pre&gt;
+
+
+&lt;p&gt;
+Nice. Just being able to write the WHERE clause as a readable
+s-expression makes CLSQL worthwhile. Of course, it does much more than
+just that.
+&lt;/p&gt;
+&lt;p&gt;
+Anyway, Clojure has a library in clojure-contrib, for integrating with
+SQL databases using JDBC. But, as you can see from the examples on
+that wiki page, SELECT, INSERT and UPDATE more or less require hand
+built SQL query strings. So, I figured I'd try and emulate the CLSQL
+approach using Clojure macrology. Here's what I was able to do:
+&lt;/p&gt;
+&lt;pre class=&quot;example&quot;&gt;
+(sql-select-stmt &quot;count(1)&quot;
+                 :from '(person)
+                 :where (sql-and (sql-= 'role +role-programmer+)
+                                 (sql-&amp;lt; 'age 30)))
+&lt;/pre&gt;
+
+
+&lt;p&gt;
+Not as concise as CLSQL (the &quot;sql-&quot; prefix interrupts the flow), but
+perhaps the best we can do, considering Clojure doesn't have
+programmable reader macros (at least not without serious
+hackery). CLSQL cleverly uses reader macros to do interesting things
+with expressions which are inside square brackets, like turning &lt;code&gt;[or ...]&lt;/code&gt; into &lt;code&gt;(sql-or ...)&lt;/code&gt;, and &lt;code&gt;[a-table-name]&lt;/code&gt; into &quot;a&lt;sub&gt;table&lt;/sub&gt;&lt;sub&gt;name&lt;/sub&gt;&quot;
+etc.
+&lt;/p&gt;
+&lt;p&gt;
+Incidentally, &lt;code&gt;sql-select-stmt&lt;/code&gt; doesn't run the query, just generates
+the query string, which can be passed to &lt;code&gt;with-results&lt;/code&gt;, like so:
+&lt;/p&gt;
+&lt;pre class=&quot;example&quot;&gt;
+(with-results rs
+  (sql-select-stmt &quot;count(1)&quot;
+                   :from from
+                   :where where)
+  (:count (first rs)))
+&lt;/pre&gt;
+
+
+&lt;p&gt;
+The code for the sql macros is a bit long to insert here, so I'm
+thinking I'll create a &lt;span style=&quot;text-decoration:underline;&quot;&gt;cynojure&lt;/span&gt; repo on github, and put all the
+various bits of clojure code I create in there. I'll post about that
+separately.
+&lt;/p&gt;
+&lt;p&gt;
+Peace.
 &lt;/p&gt;</description></item></channel></rss>

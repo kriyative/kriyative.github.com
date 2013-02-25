@@ -1,0 +1,329 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<rss version="2.0"><channel><title>common-lisp posts from kriyative</title><link>http://kriyative.github.com</link><description></description><item><title>ECL for iOS update for ECL-11.1.1, Xocde 4, and SDK 4.3</title><link>http://kriyative.github.com/2011/03/26/ecl-for-ios-updated/</link><description>
+&lt;p&gt;I've committed a new branch of ECL for iOS, which now requires
+ECL-11.1.1 (latest stable), and produces functioning device binaries
+for armv6 and armv7 architectures using Xcode 4 and SDK 4.3. This
+release has been tested on iPhone and iPad devices running iOS 4.3.1.
+&lt;/p&gt;
+&lt;p&gt;
+Please refer to the updated README for further details.
+&lt;/p&gt;
+&lt;p&gt;
+&lt;a href=&quot;https://github.com/kriyative/ecl-iphone-builder/tree/elf&quot;&gt;https://github.com/kriyative/ecl-iphone-builder/tree/elf&lt;/a&gt;
+&lt;/p&gt;
+&lt;p&gt;
+Please note that the earlier release branch `dragon' has also been
+updated to work with Xcode 4, and SDK 4.3. However, it continues to be
+based on ECL-10.4.1.
+&lt;/p&gt;
+&lt;p&gt;
+&lt;a href=&quot;https://github.com/kriyative/ecl-iphone-builder/tree/dragon&quot;&gt;https://github.com/kriyative/ecl-iphone-builder/tree/dragon&lt;/a&gt;
+&lt;/p&gt;
+&lt;p&gt;
+Many thanks to &lt;a href=&quot;http://mclide.in-progress.com/&quot;&gt;Terje Norderhaug&lt;/a&gt; for his help with this update.
+&lt;/p&gt;</description></item><item><title>Lisp functions as UI callbacks in ECL/iOS</title><link>http://kriyative.github.com/2010/12/20/lisp-functions-ui-callbacks-ecl-ios/</link><description>
+&lt;p&gt;There's been a bit of recent interest in building &quot;real&quot; apps using
+ECL/iOS. While the `eclffi' sample code in the &lt;a href=&quot;https://github.com/kriyative/ecl-iphone-builder/tree/centaur&quot;&gt;ecl-iphone-builder&lt;/a&gt; repo
+included examples of how to create/call Objective-C classes/methods
+from Lisp, it was missing the glue to go the other way, which was
+necessary to implement callbacks in Lisp. I've pushed an update to
+github which adds this functionality.
+&lt;/p&gt;
+&lt;p&gt;
+As an example I created a subclass of &lt;code&gt;UIButton&lt;/code&gt; called &lt;code&gt;UIButtonCB&lt;/code&gt;
+with one instance var called &lt;code&gt;clickHandler&lt;/code&gt;, which can be set to a
+Lisp function pointer. The &lt;code&gt;UIButtonCB&lt;/code&gt; class wires the
+&lt;code&gt;UIControlEventTouchUpInside&lt;/code&gt; event to the specified handler function.
+&lt;/p&gt;
+&lt;pre class=&quot;example&quot;&gt;
+@implementation UIButtonCB
+
+- (id) initWithFrame: (CGRect) aFrame
+{
+    [super initWithFrame: aFrame];
+    clickHandler = Cnil;
+    [self addTarget: self action: @selector(clicked:) forControlEvents: UIControlEventTouchUpInside];
+    return self;
+}
+
+- (void) setClickHandler: (cl_object) fun
+{
+    register_cb(clickHandler, fun);
+}
+
+- (void) clicked: (id) sender
+{
+    if (Cnil != clickHandler) {
+        cl_funcall(2, clickHandler, ecl_foreign_data_ref_elt(&amp;amp;sender,ECL_FFI_POINTER_VOID));
+    }
+}
+
+- (void) dealloc
+{
+    remove_cb(clickHandler);
+    clickHandler = Cnil;
+    [super dealloc];
+}
+&lt;/pre&gt;
+
+
+&lt;p&gt;
+The call to &lt;code&gt;register_cb()&lt;/code&gt; ensures that the callback function is
+protected from GC, and &lt;code&gt;remove_cb()&lt;/code&gt; makes the function GC'able
+again. &lt;code&gt;UIButtonCB&lt;/code&gt; can now be wrapped in Lisp with the following FFI
+glue:
+&lt;/p&gt;
+&lt;pre class=&quot;example&quot;&gt;
+(defun set-click-handler (view fun)
+  (when fun
+    (c-fficall ((view :pointer-void)
+                ((make-callback-function fun) :object))
+        :void
+      &quot;[#0 setClickHandler: #1];&quot;)))
+
+(defun make-button (&amp;amp;rest init-view-args &amp;amp;key title title-color icon
+                    on-click (enabled t) &amp;amp;allow-other-keys)
+  (let ((view (make-view-instance &quot;UIButtonCB&quot; init-view-args)))
+    (set-click-handler view on-click)
+    (when icon (set-image view icon))
+    (when title (set-title view title))
+    (when title-color (set-title-color view title-color))
+    (set-enabled view enabled)
+    view))
+&lt;/pre&gt;
+
+
+&lt;p&gt;
+Here's an example of the Lisp code to create a button with an on-click
+callback, which updates a label:
+&lt;/p&gt;
+&lt;pre class=&quot;example&quot;&gt;
+(let ((n 0)
+      (label (make-label &quot;&quot; :frame '(10.0 50.0 300.0 35.0))))
+  (add-subview (key-window) label)
+  (add-subview (key-window)
+               (make-button :frame '(140 230 40 20)
+                            :title &quot;click&quot;
+                            :background-color (color-argb 1 0.5 0.5 0.5)
+                            :on-click (lambda (button)
+                                        (declare (ignore button))
+                                        (set-text label
+                                                  (format nil
+                                                          &quot;~d click~:p&quot;
+                                                          (incf n)))))))
+&lt;/pre&gt;
+
+
+&lt;p&gt;
+Obviously, this isn't a very sophisticated approach, but it's a
+start. It requires subclassing each UIControl or UIView to add the
+vars to store the Lisp callbacks. I'm sure there's ample room for
+abstracting or automating some of this boilerplate Objective C code.
+&lt;/p&gt;</description></item><item><title>ECL for iOS updated to work with SDK 4.2</title><link>http://kriyative.github.com/2010/12/14/ecl-for-ios-updated/</link><description>
+&lt;p&gt;I've pushed a new branch (centaur) of the ECL for iOS project to
+github, which contains a number of fixes to get ECL compiled under the
+latest 4.2 SDK from Apple. This release has been tested on iPhone and
+iPad devices running iOS 4.2 as well as the older 3.1.3. Please refer
+to the updated README for further details.
+&lt;/p&gt;
+&lt;p&gt;
+&lt;a href=&quot;http://github.com/kriyative/ecl-iphone-builder/tree/centaur&quot;&gt;http://github.com/kriyative/ecl-iphone-builder/tree/centaur&lt;/a&gt;
+&lt;/p&gt;
+&lt;p&gt;
+Many thanks to &lt;a href=&quot;http://mclide.in-progress.com/&quot;&gt;Terje Norderhaug&lt;/a&gt; and &lt;a href=&quot;http://www.facebook.com/profile.php?id=1019202159&quot;&gt;Anthony Fairchild&lt;/a&gt; for their bug
+reports and feedback.
+&lt;/p&gt;</description></item><item><title>Snapshot of ECL for iPhone</title><link>http://kriyative.github.com/2010/02/10/snapshot-of-ecl-for-iphone/</link><description>
+&lt;p&gt;I've uploaded a snapshot of fully patched ECL-9.12.3, and Boehm GC
+sources to help anyone trying to build this environment from
+scratch. I realize a lot of the external dependencies tend to be in
+flux, so hopefully this snapshot will provide a fully functional
+starting point.
+&lt;/p&gt;
+&lt;p&gt;
+The snapshot is available at:
+&lt;a href=&quot;http://github.com/kriyative/ecl-iphone-snapshot&quot;&gt;http://github.com/kriyative/ecl-iphone-snapshot&lt;/a&gt;
+&lt;/p&gt;
+&lt;p&gt;
+The snapshot includes:
+&lt;/p&gt;
+&lt;pre class=&quot;example&quot;&gt;
+README
+build.sh
+bdwgc/
+ecl/
+eclshell/
+iphone/
+&lt;/pre&gt;
+
+
+&lt;p&gt;
+The bdwgc/ and ecl/ directories contain the patched sources for Boehm
+GC, and ECL 9.12.3. The eclshell/ folder has the sources for the
+sample iPhone app, including a snapshot of slime (CVS head as of
+2010-01-29).
+&lt;/p&gt;
+&lt;p&gt;
+The iphone/ folder contains the built product &amp;ndash; a set of header and
+static library files built for the iPhone architecture. The
+iphone/universal/ folder contains `fat' versions of the libraries
+which maybe used with either simulator or device builds.
+&lt;/p&gt;
+&lt;p&gt;
+As always, feedback and patches are welcome.
+&lt;/p&gt;
+&lt;p&gt;
+UPDATE: I moved to a github repo for the snapshot as well. It's easier
+this way to track any patches that may arise.
+&lt;/p&gt;</description></item><item><title>my other lisp blog</title><link>http://kriyative.github.com/2010/01/29/my-other-lisp-blog/</link><description>
+&lt;p&gt;I haven't been working in Clojure for a couple of months now, hence
+the absence of new posts here.
+&lt;/p&gt;
+&lt;p&gt;
+However, I have been posting some updates on my other Lisp related
+blog (yes, I have two Lisp blogs :) &amp;hellip; about my work in porting the
+Embedded Common Lisp system to the iPhone. Sound interesting, check it
+out at:
+&lt;/p&gt;</description></item><item><title>ECL on iPhone update</title><link>http://kriyative.github.com/2010/01/29/ecl-on-iphone-update/</link><description>
+&lt;p&gt;I've just checked in a significant set of changes to the
+&lt;a href=&quot;http://github.com/kriyative/ecl-iphone-builder&quot;&gt;ecl-iphone-builder&lt;/a&gt; repository, incuding the following updates:
+&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;builds with ECL 9.12.3
+&lt;/li&gt;
+&lt;li&gt;requires the CVS head version of the Boehm Weiss collector
+&lt;/li&gt;
+&lt;li&gt;smoother build process (should &quot;just work&quot;)
+&lt;/li&gt;
+&lt;li&gt;better SLIME integration (with :spawn communication style as the default)
+&lt;/li&gt;
+&lt;li&gt;expanded `eclshell' example (more goodies to follow)
+&lt;/li&gt;
+&lt;/ul&gt;
+
+
+&lt;p&gt;
+As always feedback and bug reports are appreciated.
+&lt;/p&gt;</description></item><item><title>A lightweight `bind' macro</title><link>http://kriyative.github.com/2009/12/29/a-lightweight-bind-macro/</link><description>
+&lt;p&gt;In my recent work I found myself writing a lot of code that looked
+like the following:
+&lt;/p&gt;
+&lt;pre class=&quot;example&quot;&gt;
+(destructuring-bind (x y)
+    point
+  (destructuring-bind (x1 y1 w h)
+      frame
+    (let ((x2 (+ x1 w))
+          (y2 (+ y1 h)))
+      (and (&amp;gt;= x x1) (&amp;lt;= x x2) (&amp;gt;= y y1) (&amp;lt;= y y2)))))
+&lt;/pre&gt;
+
+
+&lt;p&gt;
+The above example is a bit contrived, for effect, but hopefully
+conveys the general idea.
+&lt;/p&gt;
+&lt;p&gt;
+What I wanted was a Clojure style `let' which could destructure
+inline. There was one Common Lisp implementation
+(&lt;a href=&quot;http://common-lisp.net/project/metabang-bind/&quot;&gt;http://common-lisp.net/project/metabang-bind/&lt;/a&gt;), which had some nice
+features, but it was bit much for my needs. So I came up with my own
+lightweight &lt;code&gt;bind&lt;/code&gt; macro (see below), which lets me rewrite the above
+example as:
+&lt;/p&gt;
+&lt;pre class=&quot;example&quot;&gt;
+(bind (((x y) point)
+       ((x1 y1 w h) frame)
+       (x2 (+ x1 w))
+       (y2 (+ y1 h)))
+  (and (&amp;gt;= x x1) (&amp;lt;= x x2) (&amp;gt;= y y1) (&amp;lt;= y y2)))
+&lt;/pre&gt;
+
+
+&lt;p&gt;
+Way better, IMHO.
+&lt;/p&gt;
+&lt;p&gt;
+Oh, here's the `bind' macro in its entirety:
+&lt;/p&gt;
+&lt;pre class=&quot;example&quot;&gt;
+(defmacro bind (clauses &amp;amp;body body)
+  &quot;This macro combines the behaviour of the forms `let*', `destructuring-bind',
+and `multiple-value-bind', permitting the following style of binding form:
+ 
+  (bind (((:values m n) (values 10 20))
+         ((a b &amp;amp;key (c 10)) '(1 2))
+         (x 5))
+    (+ x a b c m n))
+  =&amp;gt; 48
+ 
+This is a more limited and lightweight implementation of some ideas from
+metabang-bind (http://common-lisp.net/project/metabang-bind/).&quot;
+  (cond
+    ((null clauses) `(progn ,@body))
+    ((and (listp (caar clauses)) (eq (caaar clauses) :values))
+     `(multiple-value-bind ,(cdaar clauses)
+          ,@(cdar clauses)
+        (bind ,(cdr clauses) ,@body)))
+    ((listp (caar clauses))
+     `(destructuring-bind ,(caar clauses)
+          ,@(cdar clauses)
+        (bind ,(cdr clauses) ,@body)))
+    (t
+     `(let (,(car clauses))
+        (bind ,(cdr clauses) ,@body)))))
+&lt;/pre&gt;
+
+</description></item><item><title>ECL on iPhone (redux)</title><link>http://kriyative.github.com/2009/12/12/ecl-on-iphone-redux/</link><description>
+&lt;p&gt;A while ago Red Daly &lt;a href=&quot;http://lambdajive.wordpress.com/2009/03/27/common-lisp-on-iphone-ecl-comes-through-at-last/&quot;&gt;posted&lt;/a&gt; about some great initial work he had done
+in porting ECL to the iPhone. I contacted him, and worked to clean up
+some of the external dependencies, and got ECL to run on the simulator
+and device (with SLIME). I put together an updated Git repo with all
+my changes, and finally got around to posting about it.
+&lt;/p&gt;
+&lt;p&gt;
+&lt;a href=&quot;http://github.com/kriyative/ecl-iphone-builder&quot;&gt;http://github.com/kriyative/ecl-iphone-builder&lt;/a&gt;
+&lt;/p&gt;
+&lt;p&gt;
+Hopefully, this will be of use to others.
+&lt;/p&gt;
+</description></item><item><title>keyword args in clojure</title><link>http://kriyative.github.com/2009/05/06/keyword-args-in-clojure/</link><description>
+&lt;p&gt;I like the keyword args support in Common Lisp. So, when I learned
+that clojure didn't support keyword args in the base language, I was a
+bit disappointed. But, with clojure's support for destructuring and
+macros, it should be easy to build keyword args &amp;hellip; right?
+&lt;/p&gt;
+&lt;p&gt;
+Rich Hickey posted a simple example on the clojure mailing list, which
+I adapted slightly to my taste:
+&lt;/p&gt;
+&lt;pre class=&quot;example&quot;&gt;
+(defmacro defun [sym args &amp;amp; body]
+  (let [[pargs [_ &amp;amp; kargs]] (split-with (fn [x] (not (= x '&amp;amp;key))) args)
+        gkeys (gensym &quot;gkeys__&quot;)
+        letk (fn [k]
+               (let [[nm val] (if (vector? k) k [k])
+                     kname (keyword (name nm))]
+                 `(~nm (or (~gkeys ~kname) ~val))))]
+    `(defn ~sym [~@pargs &amp;amp; k#]
+       (let [~gkeys (apply hash-map k#)
+             ~@(apply concat (map letk kargs))]
+         ~@body))))
+&lt;/pre&gt;
+
+
+&lt;p&gt;
+After which:
+&lt;/p&gt;
+&lt;pre class=&quot;example&quot;&gt;
+(defun foo [a b &amp;amp;key c [d 5]]
+  [a b c d])
+
+user&amp;gt; (foo 1 2 :c 10)
+[1 2 10 5]
+&lt;/pre&gt;
+
+
+&lt;p&gt;
+Joy.
+&lt;/p&gt;</description></item></channel></rss>

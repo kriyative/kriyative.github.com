@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<rss version="2.0"><channel><title>javascript posts from kriyative</title><link>http://kriyative.github.com</link><description></description><item><title>clojurejs -- a Clojure (subset) to Javascript translator</title><link>http://kriyative.github.com/2011/01/10/clojurejs-announcement/</link><description>
+&lt;p&gt;I'm releasing &lt;a href=&quot;http://github.com/kriyative/clojurejs&quot;&gt;clojurejs&lt;/a&gt; &amp;ndash; a Clojure library for translating a Clojure
+subset language to Javascript. The code is on github reachable at the
+following link:
+&lt;/p&gt;
+&lt;p&gt;
+&lt;a href=&quot;http://github.com/kriyative/clojurejs&quot;&gt;http://github.com/kriyative/clojurejs&lt;/a&gt;
+&lt;/p&gt;
+&lt;p&gt;
+clojurejs is something I've been working on for a few weeks as part of
+a larger web app in Clojure. The code's a bit crufty (reflects my
+incremental discovery of the inconsistencies in Javascript), but
+functional and I wanted put something out there for people to check
+out. I welcome bug reports and feedback. It's been useful for my
+specific needs, and I'd be happy if it's even marginally useful to
+others.
+&lt;/p&gt;
+&lt;p&gt;
+I realize there are a number of other efforts to compile/translate
+Clojure (or other Lisp subset) to Javascript, but nothing quite fit my
+requirements, which prompted me to build clojurejs. Some useful
+aspects of clojurejs are:
+&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Consistent scoping in let and loop/recur forms
+&lt;/li&gt;
+&lt;li&gt;Macros with defmacro
+&lt;/li&gt;
+&lt;li&gt;Implicit return from all forms
+&lt;/li&gt;
+&lt;li&gt;loop/recur translates to Javascript for loops
+&lt;/li&gt;
+&lt;li&gt;Translates Clojure vectors, strings, keywords, symbols and maps to
+  Javascript equivalents
+&lt;/li&gt;
+&lt;li&gt;dot form access to methods and properties
+&lt;/li&gt;
+&lt;/ul&gt;
+
+
+&lt;p&gt;
+Here's an example from the README:
+&lt;/p&gt;
+&lt;pre class=&quot;example&quot;&gt;
+(js
+ (defn join [arr delim]
+   (loop [str (get arr 0)
+          i 1]
+     (if (&amp;lt; i (length arr))
+       (recur (+ str delim (get arr i))
+              (+ i 1))
+       str))))
+&lt;/pre&gt;
+
+
+&lt;p&gt;
+translates to the following Javascript:
+&lt;/p&gt;
+
+&lt;pre class=&quot;example&quot;&gt;
+join = function(arr, delim) {
+    return (function () {
+        for (var str = arr[0],i = 1; true;) {
+            if ((i &amp;lt; arr.length)) {
+                str = (str + delim + arr[i]);
+                i = (i + 1);
+                continue;
+            } else {
+                return str;
+            } break;
+        }
+    })();
+}
+&lt;/pre&gt;
+
+
+&lt;p&gt;
+Documentation is regrettably scarce, but there are more details in the
+README file, boot.cljs, and the unit tests. I hope to add more
+documentation and examples in the next few weeks. Stay tuned.
+&lt;/p&gt;</description></item></channel></rss>

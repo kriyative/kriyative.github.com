@@ -88,3 +88,4 @@ input { font-size: 1em; }
 #profile-pic { float: left; margin-right: 1em; }
 .pager-right { float: right; }
 .pager-left { float: left; }
+#main a.tag { color: #3d3d3d; }

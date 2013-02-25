@@ -10,7 +10,7 @@
   [:link {:rel "shortcut icon" :href "/assets/favicon.ico" :type "image/x-icon"}]
   [:link {:rel "stylesheet" :type "text/css" :href "/default.css"}]
   [:link {:rel "alternate" :type "application/rss+xml"
-          :title (:site-title config) :href "/rss-feed"}]
+          :title (:site-title config) :href "/rss.xml"}]
   [:link {:href "http://fonts.googleapis.com/css?family=Snowburst+One"
           :rel "stylesheet"
           :type "text/css"}]
@@ -40,7 +40,7 @@
              ;; ["Contact" "/contact"]
              ["Archives" "/archives"]
              ["Tags" "/tags"]
-             ["Subscribe" "/rss-feed"]])))]]]
+             ["Subscribe" "/rss.xml"]])))]]]
 
   [:div {:id "main"}
    [:div {:class "sleeve"}
