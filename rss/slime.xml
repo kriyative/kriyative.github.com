@@ -1,6 +1,52 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<rss version="2.0"><channel><title>slime posts from kriyative</title><link>http://kriyative.github.com</link><description></description><item><title>clojure, emacs, and javadocs</title><link>http://kriyative.github.com/2009/06/21/clojure-emacs-and-javadocs/</link><description>
+<rss version="2.0"><channel><title>slime posts from kriyative</title><link>http://kriyative.github.com</link><description></description><item><title> clojure, emacs, and docs redux</title><link>http://kriyative.github.com/2013/03/02/clojure-emacs-docs-redux/</link><description>
+&lt;p&gt;A while back I'd &lt;a href=&quot;http:/2009/06/21/clojure-emacs-and-javadocs/&quot;&gt;written&lt;/a&gt; about looking up Javadocs from Clojure mode
+buffers. I got some good feedback on that post, so I thought I'd try
+and expand on that and see if I could integrate other Clojure
+documentation sources into a similar workflow.
+&lt;/p&gt;
+&lt;p&gt;
+&lt;a name=&quot;w3m-javadoc-screenshot&quot; id=&quot;w3m-javadoc-screenshot&quot;&gt;&lt;/a&gt;
+&lt;div class=&quot;figure&quot;&gt;
+  &lt;a href=&quot;/assets/2013/03/02/w3m-javadoc.jpg&quot;&gt;
+    &lt;img src=&quot;/assets/2013/03/02/w3m-javadoc.jpg&quot; width=&quot;400&quot;/&gt;
+  &lt;/a&gt;
+  &lt;h1&gt;view javadocs in emacs/w3m (click to view full size)&lt;/h1&gt;
+&lt;/div&gt;
+
+Looking up Clojure doc strings within Emacs is really easy. In any
+Clojure code buffer, you can place your cursor at a symbol and use
+&lt;code&gt;C-c C-d d&lt;/code&gt; or &lt;code&gt;M-x slime-describe-symbol&lt;/code&gt; to bring up the function or
+var doc string.
+&lt;/p&gt;
+&lt;p&gt;
+Previously, I'd made a &lt;code&gt;slime-javadoc&lt;/code&gt; command that could be
+configured to search external Javadoc sources only. However, that
+mechanism could be applied more generally to more sources.
+&lt;/p&gt;
+&lt;p&gt;
+The new command &lt;code&gt;M-x clojuredocs&lt;/code&gt;, can show either Javadocs for Java
+classes, or goes to the excellent &lt;a href=&quot;http://clojuredocs.org&quot;&gt;clojuredocs.org&lt;/a&gt; site for
+documentation specific to &lt;code&gt;clojure.core&lt;/code&gt; and a few other namespaces
+(such as &lt;code&gt;ring&lt;/code&gt;), or eventually fallsback to a simple Google search.
+&lt;/p&gt;
+&lt;p&gt;
+So, after connecting to a Clojure instance (via &lt;code&gt;clojure-jack-in&lt;/code&gt; or
+&lt;code&gt;slime-connect&lt;/code&gt;), I can invoke &lt;code&gt;M-x clojuredocs&lt;/code&gt; on any symbol and get
+back some relevant documentation or at the least som helpful pointers
+from Google.
+&lt;/p&gt;
+&lt;p&gt;
+I've committed an initial version of the Emacs Lisp code into the
+following github repo:
+&lt;/p&gt;
+&lt;p&gt;
+&lt;a href=&quot;http://github.com/kriyative/clojure-emacs-hacks&quot;&gt;http://github.com/kriyative/clojure-emacs-hacks&lt;/a&gt;
+&lt;/p&gt;
+&lt;p&gt;
+Feedback and bug reports are most welcome.
+&lt;/p&gt;</description></item><item><title>clojure, emacs, and javadocs</title><link>http://kriyative.github.com/2009/06/21/clojure-emacs-and-javadocs/</link><description>
 &lt;p&gt;In the course of my recent work, integrating various java libraries
 with clojure, I spent a lot of time going back and forth between emacs
 and firefox, just to read java api documentation. I even tried loading

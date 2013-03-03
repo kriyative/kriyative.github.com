@@ -19,7 +19,7 @@
     [:link {:rel "canonical" 
 	    :href (str (:site-url config) (:url metadata))}])
 
-  [:title (:title metadata)]]
+  [:title (or (:title metadata) (:site-title config))]]
 
  [:body
   [:header {:id "banner"}

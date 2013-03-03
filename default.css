@@ -89,3 +89,12 @@ input { font-size: 1em; }
 .pager-right { float: right; }
 .pager-left { float: left; }
 #main a.tag { color: #3d3d3d; }
+.figure {
+    padding: 4px;
+    margin: 1em 0 1em 0;
+}
+.figure { text-align: center; }
+.figure a { display: inline-block; padding: 1px; }
+.figure a:hover { border: solid 1px darkred; padding: 0px; }
+.figure img { border: solid 1px #ccc; }
+.figure h1 { font-size: 70%; }

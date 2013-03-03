@@ -1,0 +1,43 @@
+#+title:  clojure, emacs, and docs redux
+#+tags: clojure emacs java javadoc lisp slime
+
+A while back I'd [[http:/2009/06/21/clojure-emacs-and-javadocs/][written]] about looking up Javadocs from Clojure mode
+buffers. I got some good feedback on that post, so I thought I'd try
+and expand on that and see if I could integrate other Clojure
+documentation sources into a similar workflow.
+
+# <<w3m-javadoc-screenshot>>
+#+BEGIN_HTML
+<div class="figure">
+  <a href="/assets/2013/03/02/w3m-javadoc.jpg">
+    <img src="/assets/2013/03/02/w3m-javadoc.jpg" width="400"/>
+  </a>
+  <h1>view javadocs in emacs/w3m (click to view full size)</h1>
+</div>
+#+END_HTML
+
+Looking up Clojure doc strings within Emacs is really easy. In any
+Clojure code buffer, you can place your cursor at a symbol and use
+=C-c C-d d= or =M-x slime-describe-symbol= to bring up the function or
+var doc string.
+
+Previously, I'd made a =slime-javadoc= command that could be
+configured to search external Javadoc sources only. However, that
+mechanism could be applied more generally to more sources.
+
+The new command =M-x clojuredocs=, can show either Javadocs for Java
+classes, or goes to the excellent [[http://clojuredocs.org][clojuredocs.org]] site for
+documentation specific to =clojure.core= and a few other namespaces
+(such as =ring=), or eventually fallsback to a simple Google search.
+
+So, after connecting to a Clojure instance (via =clojure-jack-in= or
+=slime-connect=), I can invoke =M-x clojuredocs= on any symbol and get
+back some relevant documentation or at the least som helpful pointers
+from Google.
+
+I've committed an initial version of the Emacs Lisp code into the
+following github repo:
+
+http://github.com/kriyative/clojure-emacs-hacks
+
+Feedback and bug reports are most welcome.
