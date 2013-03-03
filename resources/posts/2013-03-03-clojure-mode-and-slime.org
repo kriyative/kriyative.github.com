@@ -1,0 +1,21 @@
+#+title:  clojure-mode and slime
+#+tags: clojure emacs slime
+
+As a long time user of [[http://common-lisp.net/project/slime/][SLIME]] I was a bit disappointed to see
+clojure-mode 2.0 drop support for it in favor of =nrepl=. I looked
+into =nrepl= but found it to be not as feature complete as SLIME, at
+present. Also, I still work on some sizeable Common Lisp code, which
+relies entirely on SLIME, and I want to be able leverage any tooling
+work I do across all my projects -- so SLIME wins.
+
+As it turns out, it wasn't at all difficult to resurrect the SLIME
+integration code from clojure-mode 1.x and load it alongside the newer
+clojure-mode.
+
+I've committed the =clojure-mode-slime.el= Emacs Lisp code into the
+following repo, along with some other Clojure/Emacs hacks:
+
+http://github.com/kriyative/clojure-emacs-hacks
+
+I hope this is useful to other SLIME die-hards in the Clojure
+community as well.  Feedback and bug reports are most welcome.

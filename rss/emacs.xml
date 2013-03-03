@@ -1,6 +1,29 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<rss version="2.0"><channel><title>emacs posts from kriyative</title><link>http://kriyative.github.com</link><description></description><item><title> clojure, emacs, and docs redux</title><link>http://kriyative.github.com/2013/03/02/clojure-emacs-docs-redux/</link><description>
+<rss version="2.0"><channel><title>emacs posts from kriyative</title><link>http://kriyative.github.com</link><description></description><item><title> clojure-mode and slime</title><link>http://kriyative.github.com/2013/03/03/clojure-mode-and-slime/</link><description>
+&lt;p&gt;As a long time user of &lt;a href=&quot;http://common-lisp.net/project/slime/&quot;&gt;SLIME&lt;/a&gt; I was a bit disappointed to see
+clojure-mode 2.0 drop support for it in favor of &lt;code&gt;nrepl&lt;/code&gt;. I looked
+into &lt;code&gt;nrepl&lt;/code&gt; but found it to be not as feature complete as SLIME, at
+present. Also, I still work on some sizeable Common Lisp code, which
+relies entirely on SLIME, and I want to be able leverage any tooling
+work I do across all my projects &amp;ndash; so SLIME wins.
+&lt;/p&gt;
+&lt;p&gt;
+As it turns out, it wasn't at all difficult to resurrect the SLIME
+integration code from clojure-mode 1.x and load it alongside the newer
+clojure-mode.
+&lt;/p&gt;
+&lt;p&gt;
+I've committed the &lt;code&gt;clojure-mode-slime.el&lt;/code&gt; Emacs Lisp code into the
+following repo, along with some other Clojure/Emacs hacks:
+&lt;/p&gt;
+&lt;p&gt;
+&lt;a href=&quot;http://github.com/kriyative/clojure-emacs-hacks&quot;&gt;http://github.com/kriyative/clojure-emacs-hacks&lt;/a&gt;
+&lt;/p&gt;
+&lt;p&gt;
+I hope this is useful to other SLIME die-hards in the Clojure
+community as well.  Feedback and bug reports are most welcome.
+&lt;/p&gt;</description></item><item><title> clojure, emacs, and docs redux</title><link>http://kriyative.github.com/2013/03/02/clojure-emacs-docs-redux/</link><description>
 &lt;p&gt;A while back I'd &lt;a href=&quot;http:/2009/06/21/clojure-emacs-and-javadocs/&quot;&gt;written&lt;/a&gt; about looking up Javadocs from Clojure mode
 buffers. I got some good feedback on that post, so I thought I'd try
 and expand on that and see if I could integrate other Clojure
