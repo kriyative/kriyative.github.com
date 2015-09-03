@@ -1,14 +1,3 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<rss version="2.0"><channel><title>community posts from kriyative</title><link>http://kriyative.github.com</link><description></description><item><title>community funded clojure</title><link>http://kriyative.github.com/2009/12/14/community-funded-clojure/</link><description>
-&lt;p&gt;Rich Hickey &lt;a href=&quot;http://groups.google.com/group/clojure/browse_frm/thread/cc77df25e98ce46b&quot;&gt;posted&lt;/a&gt; a compelling message about funding the future
-development of Clojure.
-&lt;/p&gt;
-&lt;p&gt;
-I donated, and urge all Lispers to consider the same. Clojure maybe
-one of the best things to happen to Lisp in a long while, and it and
-Rich are most deserving of our continued support.
-&lt;/p&gt;
-&lt;p&gt;
-Donate at &lt;a href=&quot;http://clojure.org&quot;&gt;clojure.org&lt;/a&gt;.
-&lt;/p&gt;</description></item></channel></rss>
+<rss version="2.0"><channel><title>community posts from kriyative</title><link>http://kriyative.github.com</link><description></description><item><title>community funded clojure</title><link>http://kriyative.github.com/2009/12/14/community-funded-clojure/</link><description>clojure.lang.Delay@10bd30cc</description></item></channel></rss>
