@@ -1,3 +1,103 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<rss version="2.0"><channel><title>objective-c posts from kriyative</title><link>http://kriyative.github.com</link><description></description><item><title>Lisp functions as UI callbacks in ECL/iOS</title><link>http://kriyative.github.com/2010/12/20/lisp-functions-ui-callbacks-ecl-ios/</link><description>clojure.lang.Delay@415abfe1</description></item></channel></rss>
+<rss version="2.0"><channel><title>objective-c posts from kriyative</title><link>http://kriyative.github.com</link><description></description><item><title>Lisp functions as UI callbacks in ECL/iOS</title><link>http://kriyative.github.com/2010/12/20/lisp-functions-ui-callbacks-ecl-ios/</link><description>&lt;p&gt;
+There&apos;s been a bit of recent interest in building &quot;real&quot; apps using
+ECL/iOS. While the `eclffi&apos; sample code in the &lt;a href=&quot;https://github.com/kriyative/ecl-iphone-builder/tree/centaur&quot;&gt;ecl-iphone-builder&lt;/a&gt; repo
+included examples of how to create/call Objective-C classes/methods
+from Lisp, it was missing the glue to go the other way, which was
+necessary to implement callbacks in Lisp. I&apos;ve pushed an update to
+github which adds this functionality.
+&lt;/p&gt;
+
+&lt;p&gt;
+As an example I created a subclass of &lt;code&gt;UIButton&lt;/code&gt; called &lt;code&gt;UIButtonCB&lt;/code&gt;
+with one instance var called &lt;code&gt;clickHandler&lt;/code&gt;, which can be set to a
+Lisp function pointer. The &lt;code&gt;UIButtonCB&lt;/code&gt; class wires the
+&lt;code&gt;UIControlEventTouchUpInside&lt;/code&gt; event to the specified handler function.
+&lt;/p&gt;
+
+&lt;pre class=&quot;example&quot;&gt;
+@implementation UIButtonCB
+
+- (id) initWithFrame: (CGRect) aFrame
+{
+    [super initWithFrame: aFrame];
+    clickHandler = Cnil;
+    [self addTarget: self action: @selector(clicked:) forControlEvents: UIControlEventTouchUpInside];
+    return self;
+}
+
+- (void) setClickHandler: (cl_object) fun
+{
+    register_cb(clickHandler, fun);
+}
+
+- (void) clicked: (id) sender
+{
+    if (Cnil != clickHandler) {
+        cl_funcall(2, clickHandler, ecl_foreign_data_ref_elt(&amp;amp;sender,ECL_FFI_POINTER_VOID));
+    }
+}
+
+- (void) dealloc
+{
+    remove_cb(clickHandler);
+    clickHandler = Cnil;
+    [super dealloc];
+}
+&lt;/pre&gt;
+
+&lt;p&gt;
+The call to &lt;code&gt;register_cb()&lt;/code&gt; ensures that the callback function is
+protected from GC, and &lt;code&gt;remove_cb()&lt;/code&gt; makes the function GC&apos;able
+again. &lt;code&gt;UIButtonCB&lt;/code&gt; can now be wrapped in Lisp with the following FFI
+glue:
+&lt;/p&gt;
+
+&lt;pre class=&quot;example&quot;&gt;
+(defun set-click-handler (view fun)
+  (when fun
+    (c-fficall ((view :pointer-void)
+                ((make-callback-function fun) :object))
+        :void
+      &quot;[#0 setClickHandler: #1];&quot;)))
+
+(defun make-button (&amp;amp;rest init-view-args &amp;amp;key title title-color icon
+                    on-click (enabled t) &amp;amp;allow-other-keys)
+  (let ((view (make-view-instance &quot;UIButtonCB&quot; init-view-args)))
+    (set-click-handler view on-click)
+    (when icon (set-image view icon))
+    (when title (set-title view title))
+    (when title-color (set-title-color view title-color))
+    (set-enabled view enabled)
+    view))
+&lt;/pre&gt;
+
+&lt;p&gt;
+Here&apos;s an example of the Lisp code to create a button with an on-click
+callback, which updates a label:
+&lt;/p&gt;
+
+&lt;pre class=&quot;example&quot;&gt;
+(let ((n 0)
+      (label (make-label &quot;&quot; :frame &apos;(10.0 50.0 300.0 35.0))))
+  (add-subview (key-window) label)
+  (add-subview (key-window)
+               (make-button :frame &apos;(140 230 40 20)
+                            :title &quot;click&quot;
+                            :background-color (color-argb 1 0.5 0.5 0.5)
+                            :on-click (lambda (button)
+                                        (declare (ignore button))
+                                        (set-text label
+                                                  (format nil
+                                                          &quot;~d click~:p&quot;
+                                                          (incf n)))))))
+&lt;/pre&gt;
+
+&lt;p&gt;
+Obviously, this isn&apos;t a very sophisticated approach, but it&apos;s a
+start. It requires subclassing each UIControl or UIView to add the
+vars to store the Lisp callbacks. I&apos;m sure there&apos;s ample room for
+abstracting or automating some of this boilerplate Objective C code.
+&lt;/p&gt;
+</description></item></channel></rss>

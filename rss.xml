@@ -1,3 +1,837 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<rss version="2.0"><channel><title>kriyative</title><link>http://kriyative.github.com</link><description></description><item><title> clojure-mode and slime</title><link>http://kriyative.github.com/2013/03/03/clojure-mode-and-slime/</link><description>clojure.lang.Delay@3e3d101</description></item><item><title> clojure, emacs, and docs redux</title><link>http://kriyative.github.com/2013/03/02/clojure-emacs-docs-redux/</link><description>clojure.lang.Delay@7898fc6a</description></item><item><title> New Site</title><link>http://kriyative.github.com/2013/02/20/new-site/</link><description>clojure.lang.Delay@52aa1162</description></item><item><title>Emacs for Clojure - Part 2</title><link>http://kriyative.github.com/2012/07/28/emacs-for-clojure-2/</link><description>clojure.lang.Delay@2730478f</description></item><item><title>Emacs for Clojure - Part 1</title><link>http://kriyative.github.com/2012/07/21/emacs-for-clojure-1/</link><description>clojure.lang.Delay@2ceb6e4c</description></item><item><title>ECL for iOS update for ECL-11.1.1, Xocde 4, and SDK 4.3</title><link>http://kriyative.github.com/2011/03/26/ecl-for-ios-updated/</link><description>clojure.lang.Delay@cd62dd4</description></item><item><title>clojurejs -- a Clojure (subset) to Javascript translator</title><link>http://kriyative.github.com/2011/01/10/clojurejs-announcement/</link><description>clojure.lang.Delay@1b5b6354</description></item><item><title>Lisp functions as UI callbacks in ECL/iOS</title><link>http://kriyative.github.com/2010/12/20/lisp-functions-ui-callbacks-ecl-ios/</link><description>clojure.lang.Delay@415abfe1</description></item><item><title>ECL for iOS updated to work with SDK 4.2</title><link>http://kriyative.github.com/2010/12/14/ecl-for-ios-updated/</link><description>clojure.lang.Delay@1496569e</description></item><item><title>Displaying a daily Org-mode agenda reminder in Emacs</title><link>http://kriyative.github.com/2010/03/23/daily-org-agenda-reminder/</link><description>clojure.lang.Delay@1a10a9a1</description></item></channel></rss>
+<rss version="2.0"><channel><title>kriyative</title><link>http://kriyative.github.com</link><description></description><item><title> clojure-mode and slime</title><link>http://kriyative.github.com/2013/03/03/clojure-mode-and-slime/</link><description>&lt;p&gt;
+As a long time user of &lt;a href=&quot;http://common-lisp.net/project/slime/&quot;&gt;SLIME&lt;/a&gt; I was a bit disappointed to see
+clojure-mode 2.0 drop support for it in favor of &lt;code&gt;nrepl&lt;/code&gt;. I looked
+into &lt;code&gt;nrepl&lt;/code&gt; but found it to be not as feature complete as SLIME, at
+present. Also, I still work on some sizeable Common Lisp code, which
+relies entirely on SLIME, and I want to be able leverage any tooling
+work I do across all my projects &amp;#x2013; so SLIME wins.
+&lt;/p&gt;
+
+&lt;p&gt;
+As it turns out, it wasn&apos;t at all difficult to resurrect the SLIME
+integration code from clojure-mode 1.x and load it alongside the newer
+clojure-mode.
+&lt;/p&gt;
+
+&lt;p&gt;
+I&apos;ve committed the &lt;code&gt;clojure-mode-slime.el&lt;/code&gt; Emacs Lisp code into the
+following repo, along with some other Clojure/Emacs hacks:
+&lt;/p&gt;
+
+&lt;p&gt;
+&lt;a href=&quot;http://github.com/kriyative/clojure-emacs-hacks&quot;&gt;http://github.com/kriyative/clojure-emacs-hacks&lt;/a&gt;
+&lt;/p&gt;
+
+&lt;p&gt;
+I hope this is useful to other SLIME die-hards in the Clojure
+community as well.  Feedback and bug reports are most welcome.
+&lt;/p&gt;
+</description></item><item><title> clojure, emacs, and docs redux</title><link>http://kriyative.github.com/2013/03/02/clojure-emacs-docs-redux/</link><description>&lt;p&gt;
+A while back I&apos;d &lt;a href=&quot;http:/2009/06/21/clojure-emacs-and-javadocs/&quot;&gt;written&lt;/a&gt; about looking up Javadocs from Clojure mode
+buffers. I got some good feedback on that post, so I thought I&apos;d try
+and expand on that and see if I could integrate other Clojure
+documentation sources into a similar workflow.
+&lt;/p&gt;
+
+&lt;div class=&quot;figure&quot;&gt;
+  &lt;a href=&quot;/assets/2013/03/02/w3m-javadoc.jpg&quot;&gt;
+    &lt;img src=&quot;/assets/2013/03/02/w3m-javadoc.jpg&quot; width=&quot;400&quot;/&gt;
+  &lt;/a&gt;
+  &lt;h1&gt;view javadocs in emacs/w3m (click to view full size)&lt;/h1&gt;
+&lt;/div&gt;
+
+&lt;p&gt;
+Looking up Clojure doc strings within Emacs is really easy. In any
+Clojure code buffer, you can place your cursor at a symbol and use
+&lt;code&gt;C-c C-d d&lt;/code&gt; or &lt;code&gt;M-x slime-describe-symbol&lt;/code&gt; to bring up the function or
+var doc string.
+&lt;/p&gt;
+
+&lt;p&gt;
+Previously, I&apos;d made a &lt;code&gt;slime-javadoc&lt;/code&gt; command that could be
+configured to search external Javadoc sources only. However, that
+mechanism could be applied more generally to more sources.
+&lt;/p&gt;
+
+&lt;p&gt;
+The new command &lt;code&gt;M-x clojuredocs&lt;/code&gt;, can show either Javadocs for Java
+classes, or goes to the excellent &lt;a href=&quot;http://clojuredocs.org&quot;&gt;clojuredocs.org&lt;/a&gt; site for
+documentation specific to &lt;code&gt;clojure.core&lt;/code&gt; and a few other namespaces
+(such as &lt;code&gt;ring&lt;/code&gt;), or eventually fallsback to a simple Google search.
+&lt;/p&gt;
+
+&lt;p&gt;
+So, after connecting to a Clojure instance (via &lt;code&gt;clojure-jack-in&lt;/code&gt; or
+&lt;code&gt;slime-connect&lt;/code&gt;), I can invoke &lt;code&gt;M-x clojuredocs&lt;/code&gt; on any symbol and get
+back some relevant documentation or at the least som helpful pointers
+from Google.
+&lt;/p&gt;
+
+&lt;p&gt;
+I&apos;ve committed an initial version of the Emacs Lisp code into the
+following github repo:
+&lt;/p&gt;
+
+&lt;p&gt;
+&lt;a href=&quot;http://github.com/kriyative/clojure-emacs-hacks&quot;&gt;http://github.com/kriyative/clojure-emacs-hacks&lt;/a&gt;
+&lt;/p&gt;
+
+&lt;p&gt;
+Feedback and bug reports are most welcome.
+&lt;/p&gt;
+</description></item><item><title> New Site</title><link>http://kriyative.github.com/2013/02/20/new-site/</link><description>&lt;p&gt;
+This is my shiny new site hosted on github.com. I used to previously
+blog at &lt;a href=&quot;http://funcall.posterous.com&quot;&gt;funcall.posterous.com&lt;/a&gt; and &lt;a href=&quot;http://cynojure.posterous.com&quot;&gt;cynojure.posterous.com&lt;/a&gt;, but I think
+&lt;a href=&quot;http://github.com&quot;&gt;github&lt;/a&gt; may be a more natural fit for my edit and publish workflow.
+After all, most of my professional and hobbyist programming work lives
+here, so why not my blog.
+&lt;/p&gt;
+
+&lt;p&gt;
+Incidentally, I&apos;m using &lt;a href=&quot;http://orgmode.org/&quot;&gt;org-mode&lt;/a&gt; in &lt;a href=&quot;http://www.gnu.org/software/emacs/&quot;&gt;Emacs&lt;/a&gt; to author the posts and a
+modified version of the &lt;a href=&quot;http://nakkaya.com/static.html&quot;&gt;static&lt;/a&gt; blog generation tool to generate the
+HTML and RSS.
+&lt;/p&gt;
+</description></item><item><title>Emacs for Clojure - Part 2</title><link>http://kriyative.github.com/2012/07/28/emacs-for-clojure-2/</link><description>&lt;p&gt;
+This is the second in a two part post about a Clojure programmer
+workflow entirely within Emacs.
+&lt;/p&gt;
+
+&lt;div id=&quot;outline-container-sec-1&quot; class=&quot;outline-2&quot;&gt;
+&lt;h2 id=&quot;sec-1&quot;&gt;Editing Clojure&lt;/h2&gt;
+&lt;div class=&quot;outline-text-2&quot; id=&quot;text-1&quot;&gt;
+&lt;p&gt;
+Some useful navigation key bindings in Clojure-mode, actually any Lisp
+code editing mode in Emacs, are as follows:
+&lt;/p&gt;
+
+&lt;table border=&quot;2&quot; cellspacing=&quot;0&quot; cellpadding=&quot;6&quot; rules=&quot;groups&quot; frame=&quot;hsides&quot;&gt;
+
+
+&lt;colgroup&gt;
+&lt;col  class=&quot;left&quot; /&gt;
+
+&lt;col  class=&quot;left&quot; /&gt;
+&lt;/colgroup&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th scope=&quot;col&quot; class=&quot;left&quot;&gt;Keybinding&lt;/th&gt;
+&lt;th scope=&quot;col&quot; class=&quot;left&quot;&gt;Command&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td class=&quot;left&quot;&gt;&lt;code&gt;C-M-f&lt;/code&gt;&lt;/td&gt;
+&lt;td class=&quot;left&quot;&gt;&lt;code&gt;forward-sexp&lt;/code&gt;&lt;/td&gt;
+&lt;/tr&gt;
+
+&lt;tr&gt;
+&lt;td class=&quot;left&quot;&gt;&lt;code&gt;C-M-b&lt;/code&gt;&lt;/td&gt;
+&lt;td class=&quot;left&quot;&gt;&lt;code&gt;backward-sexp&lt;/code&gt;&lt;/td&gt;
+&lt;/tr&gt;
+
+&lt;tr&gt;
+&lt;td class=&quot;left&quot;&gt;&lt;code&gt;C-M-a&lt;/code&gt;&lt;/td&gt;
+&lt;td class=&quot;left&quot;&gt;&lt;code&gt;beginning-of-defun&lt;/code&gt;&lt;/td&gt;
+&lt;/tr&gt;
+
+&lt;tr&gt;
+&lt;td class=&quot;left&quot;&gt;&lt;code&gt;C-M-e&lt;/code&gt;&lt;/td&gt;
+&lt;td class=&quot;left&quot;&gt;&lt;code&gt;end-of-defun&lt;/code&gt;&lt;/td&gt;
+&lt;/tr&gt;
+
+&lt;tr&gt;
+&lt;td class=&quot;left&quot;&gt;&lt;code&gt;C-M-x&lt;/code&gt;&lt;/td&gt;
+&lt;td class=&quot;left&quot;&gt;&lt;code&gt;slime-compile-defun&lt;/code&gt;&lt;/td&gt;
+&lt;/tr&gt;
+
+&lt;tr&gt;
+&lt;td class=&quot;left&quot;&gt;&lt;code&gt;C-x C-e&lt;/code&gt;&lt;/td&gt;
+&lt;td class=&quot;left&quot;&gt;&lt;code&gt;slime-eval-last-expression&lt;/code&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+
+&lt;p&gt;
+Some of these key bindings get redefined when a buffer is in
+&lt;code&gt;slime-mode&lt;/code&gt; to SLIME enhanced equivalents, but mostly they behave the
+same.
+&lt;/p&gt;
+
+&lt;p&gt;
+And, don&apos;t forget the exponential effect of the &lt;code&gt;C-u&lt;/code&gt; prefix key.
+&lt;/p&gt;
+
+&lt;p&gt;
+Some other key bindings that are also useful are:
+&lt;/p&gt;
+
+&lt;table border=&quot;2&quot; cellspacing=&quot;0&quot; cellpadding=&quot;6&quot; rules=&quot;groups&quot; frame=&quot;hsides&quot;&gt;
+
+
+&lt;colgroup&gt;
+&lt;col  class=&quot;left&quot; /&gt;
+
+&lt;col  class=&quot;left&quot; /&gt;
+
+&lt;col  class=&quot;left&quot; /&gt;
+&lt;/colgroup&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th scope=&quot;col&quot; class=&quot;left&quot;&gt;Keybinding&lt;/th&gt;
+&lt;th scope=&quot;col&quot; class=&quot;left&quot;&gt;Command&lt;/th&gt;
+&lt;th scope=&quot;col&quot; class=&quot;left&quot;&gt;Doc&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td class=&quot;left&quot;&gt;&lt;code&gt;C-M-q&lt;/code&gt;&lt;/td&gt;
+&lt;td class=&quot;left&quot;&gt;&lt;code&gt;indent-sexp&lt;/code&gt;&lt;/td&gt;
+&lt;td class=&quot;left&quot;&gt;A lot of times when copying and pasting or otherwise modifying large blocks of s-expressions, the indentation of the code can get out of whack. &lt;code&gt;indent-sexp&lt;/code&gt; can help restore the balance.&lt;/td&gt;
+&lt;/tr&gt;
+
+&lt;tr&gt;
+&lt;td class=&quot;left&quot;&gt;&lt;code&gt;C-M-h&lt;/code&gt;&lt;/td&gt;
+&lt;td class=&quot;left&quot;&gt;&lt;code&gt;mark-defun&lt;/code&gt;&lt;/td&gt;
+&lt;td class=&quot;left&quot;&gt;&amp;#xa0;&lt;/td&gt;
+&lt;/tr&gt;
+
+&lt;tr&gt;
+&lt;td class=&quot;left&quot;&gt;&lt;code&gt;C-M-k&lt;/code&gt;&lt;/td&gt;
+&lt;td class=&quot;left&quot;&gt;&lt;code&gt;kill-sexp&lt;/code&gt;&lt;/td&gt;
+&lt;td class=&quot;left&quot;&gt;&amp;#xa0;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+
+&lt;p&gt;
+Also worth knowing, the magic of &lt;i&gt;dynamic abbrevs&lt;/i&gt; bound to the
+@&amp;lt;code&amp;gt;M-/@&amp;lt;/code&amp;gt; key binding. Dynamic abbrevs are a quick way to
+complete a long function or var name from a minimal prefix. It&apos;s very
+brute force (i.e, just searches for a match in all the open buffers),
+but since it&apos;s very fast, it comes in handy when you&apos;re working with
+partially evaluated Clojure code.
+&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+
+
+&lt;div id=&quot;outline-container-sec-2&quot; class=&quot;outline-2&quot;&gt;
+&lt;h2 id=&quot;sec-2&quot;&gt;Clojure REPL&lt;/h2&gt;
+&lt;div class=&quot;outline-text-2&quot; id=&quot;text-2&quot;&gt;
+&lt;p&gt;
+Everything begins with a Clojure instance which has SWANK loaded.
+Again, there are lots of ways of starting one of these, and the most
+common use case is with a &lt;a href=&quot;https://github.com/technomancy/leiningen/&quot;&gt;Leiningen&lt;/a&gt; project setup. Setting up
+Leiningen is beyond the scope of this post, but the docs on
+Leiningen&apos;s github page are quite helpful in getting you started.
+&lt;/p&gt;
+
+&lt;p&gt;
+Once Leiningen is setup and you have a &lt;code&gt;project.clj&lt;/code&gt; file for your
+project, you can invoke &lt;code&gt;clojure-jack-in&lt;/code&gt;.
+&lt;/p&gt;
+
+&lt;p&gt;
+Once SLIME is connected, it&apos;s helpful to know the following commands:
+&lt;/p&gt;
+
+&lt;table border=&quot;2&quot; cellspacing=&quot;0&quot; cellpadding=&quot;6&quot; rules=&quot;groups&quot; frame=&quot;hsides&quot;&gt;
+
+
+&lt;colgroup&gt;
+&lt;col  class=&quot;left&quot; /&gt;
+
+&lt;col  class=&quot;left&quot; /&gt;
+
+&lt;col  class=&quot;left&quot; /&gt;
+&lt;/colgroup&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th scope=&quot;col&quot; class=&quot;left&quot;&gt;Keybinding&lt;/th&gt;
+&lt;th scope=&quot;col&quot; class=&quot;left&quot;&gt;Command&lt;/th&gt;
+&lt;th scope=&quot;col&quot; class=&quot;left&quot;&gt;Doc&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td class=&quot;left&quot;&gt;&amp;#xa0;&lt;/td&gt;
+&lt;td class=&quot;left&quot;&gt;&lt;code&gt;slime-repl&lt;/code&gt;&lt;/td&gt;
+&lt;td class=&quot;left&quot;&gt;This is a quick way to jump to the &lt;code&gt;*slime-repl clojure*&lt;/code&gt; buffer.&lt;/td&gt;
+&lt;/tr&gt;
+
+&lt;tr&gt;
+&lt;td class=&quot;left&quot;&gt;&amp;#xa0;&lt;/td&gt;
+&lt;td class=&quot;left&quot;&gt;&lt;code&gt;slime-reset&lt;/code&gt;&lt;/td&gt;
+&lt;td class=&quot;left&quot;&gt;When your SLIME connection goes out of whack.&lt;/td&gt;
+&lt;/tr&gt;
+
+&lt;tr&gt;
+&lt;td class=&quot;left&quot;&gt;&lt;code&gt;C-M-i&lt;/code&gt;&lt;/td&gt;
+&lt;td class=&quot;left&quot;&gt;&lt;code&gt;slime-complete-symbol&lt;/code&gt;&lt;/td&gt;
+&lt;td class=&quot;left&quot;&gt;&amp;#xa0;&lt;/td&gt;
+&lt;/tr&gt;
+
+&lt;tr&gt;
+&lt;td class=&quot;left&quot;&gt;&lt;code&gt;C-x e&lt;/code&gt;&lt;/td&gt;
+&lt;td class=&quot;left&quot;&gt;&lt;code&gt;slime-eval-last-expression&lt;/code&gt;&lt;/td&gt;
+&lt;td class=&quot;left&quot;&gt;Makes every Clojure buffer into a REPL. Plus, it is very handy when iterating on tests.&lt;/td&gt;
+&lt;/tr&gt;
+
+&lt;tr&gt;
+&lt;td class=&quot;left&quot;&gt;&lt;code&gt;C-c C-c&lt;/code&gt;, &lt;code&gt;C-M-x&lt;/code&gt;&lt;/td&gt;
+&lt;td class=&quot;left&quot;&gt;&lt;code&gt;slime-compile-defun&lt;/code&gt;&lt;/td&gt;
+&lt;td class=&quot;left&quot;&gt;This is convenient for compiling a &lt;code&gt;defn&lt;/code&gt; or other top-level form, without having to put the cursor at the end of the expression.&lt;/td&gt;
+&lt;/tr&gt;
+
+&lt;tr&gt;
+&lt;td class=&quot;left&quot;&gt;&amp;#xa0;&lt;/td&gt;
+&lt;td class=&quot;left&quot;&gt;&lt;code&gt;slime-list-connections&lt;/code&gt;&lt;/td&gt;
+&lt;td class=&quot;left&quot;&gt;If you find yourself having to connect to multiple SWANK servers this command is helpful in switching between them.&lt;/td&gt;
+&lt;/tr&gt;
+
+&lt;tr&gt;
+&lt;td class=&quot;left&quot;&gt;&amp;#xa0;&lt;/td&gt;
+&lt;td class=&quot;left&quot;&gt;&lt;code&gt;slime-list-threads&lt;/code&gt;&lt;/td&gt;
+&lt;td class=&quot;left&quot;&gt;Show the list of scheduled JVM threads, and can provides an interactive way to kill running threads. Use with caution.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+</description></item><item><title>Emacs for Clojure - Part 1</title><link>http://kriyative.github.com/2012/07/21/emacs-for-clojure-1/</link><description>&lt;p&gt;
+This is a brief overview of the way I work in Clojure using Emacs -
+almost exclusively. Obviously, Emacs is not the only way to interact
+with Clojure, but it can be a pretty seamless and efficient
+environment for Clojure, once you become familiar with the powerful
+extensibility and &quot;mouse-free&quot; efficiency of Emacs.
+&lt;/p&gt;
+
+&lt;p&gt;
+Also, since Emacs uses Lisp as its extension language, there&apos;s a lot
+of value for a Clojure/Lisp developer in learning and mastering the
+Emacs&apos; ecosystem. I hope this series of posts will be helpful in that
+endeavour.
+&lt;/p&gt;
+
+&lt;p&gt;
+There are lots of &quot;getting started with Emacs&quot; docs available online
+and on the web. The easiest one is the built-in &lt;a href=&quot;http://git.savannah.gnu.org/cgit/emacs.git/plain/etc/tutorials/TUTORIAL?h=emacs-24&quot;&gt;Tutorial&lt;/a&gt;, which you
+can also bring up within Emacs with &lt;code&gt;C-h t&lt;/code&gt; or &lt;code&gt;M-x
+help-with-tutorial&lt;/code&gt;.  Other online references:
+&lt;/p&gt;
+
+&lt;ol class=&quot;org-ol&quot;&gt;
+&lt;li&gt;&lt;a href=&quot;http://www.gnu.org/software/emacs/tour/&quot;&gt;A Guided Tour of Emacs&lt;/a&gt;
+&lt;/li&gt;
+
+&lt;li&gt;&lt;a href=&quot;http://www2.lib.uchicago.edu/keith/tcl-course/emacs-tutorial.html&quot;&gt;A Tutorial Introduction to GNU Emacs&lt;/a&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+
+
+&lt;p&gt;
+For the most part, I&apos;m going to assume you&apos;re using Emacs default key
+bindings, but the following customizations don&apos;t really depend on
+that.
+&lt;/p&gt;
+
+&lt;div id=&quot;outline-container-sec-1&quot; class=&quot;outline-2&quot;&gt;
+&lt;h2 id=&quot;sec-1&quot;&gt;Process&lt;/h2&gt;
+&lt;div class=&quot;outline-text-2&quot; id=&quot;text-1&quot;&gt;
+&lt;p&gt;
+My typical work-flow involves the following steps (but not necessarily
+in the same order always):
+&lt;/p&gt;
+
+&lt;pre class=&quot;example&quot;&gt;
+(loop []
+  ;; Edit code/tests
+  ;; Interactive development with REPL and tests
+  ;; Look up documentation
+  ;; Search and Navigate a code tree
+  ;; Run batch tests
+  ;; Merge commits and resolve conflicts in Git
+  (recur))
+&lt;/pre&gt;
+
+&lt;p&gt;
+I&apos;ll try to cover each of these steps in detail over the course of the
+next few posts.
+&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+
+&lt;div id=&quot;outline-container-sec-2&quot; class=&quot;outline-2&quot;&gt;
+&lt;h2 id=&quot;sec-2&quot;&gt;Clojure Mode Setup&lt;/h2&gt;
+&lt;div class=&quot;outline-text-2&quot; id=&quot;text-2&quot;&gt;
+&lt;p&gt;
+Like snowflakes and Sting albums, there are myriad ways of setting up
+the Clojure environment in Emacs, but essentially all of them should
+be doing something similar to the following:
+&lt;/p&gt;
+
+&lt;pre class=&quot;example&quot;&gt;
+(defun clojure-mode-hook ()
+  (setq indent-tabs-mode nil
+        clojure-mode-use-backtracking-indent t)
+  (setup-clojure-indentation-rules))
+(require &apos;clojure-mode)
+(require &apos;clojure-test-mode)
+(require &apos;swank-clojure)
+(add-hook &apos;clojure-mode-hook &apos;clojure-mode-hook)
+(add-hook &apos;clojure-mode-hook &apos;clojure-test-mode)
+&lt;/pre&gt;
+
+&lt;p&gt;
+If you are using Emacs 24 and have never setup Clojure-mode or SLIME
+before, check out the &lt;a href=&quot;https://github.com/technomancy/emacs-starter-kit&quot;&gt;emacs-starter-kit&lt;/a&gt;.
+&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+
+&lt;div id=&quot;outline-container-sec-3&quot; class=&quot;outline-2&quot;&gt;
+&lt;h2 id=&quot;sec-3&quot;&gt;Basic Editing&lt;/h2&gt;
+&lt;div class=&quot;outline-text-2&quot; id=&quot;text-3&quot;&gt;
+&lt;p&gt;
+It&apos;s good to get familiar with the basic cursor movement keys such as:
+&lt;/p&gt;
+
+&lt;table border=&quot;2&quot; cellspacing=&quot;0&quot; cellpadding=&quot;6&quot; rules=&quot;groups&quot; frame=&quot;hsides&quot;&gt;
+
+
+&lt;colgroup&gt;
+&lt;col  class=&quot;left&quot; /&gt;
+
+&lt;col  class=&quot;left&quot; /&gt;
+&lt;/colgroup&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th scope=&quot;col&quot; class=&quot;left&quot;&gt;Keybinding&lt;/th&gt;
+&lt;th scope=&quot;col&quot; class=&quot;left&quot;&gt;Command&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td class=&quot;left&quot;&gt;&lt;code&gt;C-n&lt;/code&gt;&lt;/td&gt;
+&lt;td class=&quot;left&quot;&gt;&lt;code&gt;next-line&lt;/code&gt;&lt;/td&gt;
+&lt;/tr&gt;
+
+&lt;tr&gt;
+&lt;td class=&quot;left&quot;&gt;&lt;code&gt;C-p&lt;/code&gt;&lt;/td&gt;
+&lt;td class=&quot;left&quot;&gt;&lt;code&gt;previous-line&lt;/code&gt;&lt;/td&gt;
+&lt;/tr&gt;
+
+&lt;tr&gt;
+&lt;td class=&quot;left&quot;&gt;&lt;code&gt;C-f&lt;/code&gt;&lt;/td&gt;
+&lt;td class=&quot;left&quot;&gt;&lt;code&gt;forward-char&lt;/code&gt;&lt;/td&gt;
+&lt;/tr&gt;
+
+&lt;tr&gt;
+&lt;td class=&quot;left&quot;&gt;&lt;code&gt;C-b&lt;/code&gt;&lt;/td&gt;
+&lt;td class=&quot;left&quot;&gt;&lt;code&gt;backward-char&lt;/code&gt;&lt;/td&gt;
+&lt;/tr&gt;
+
+&lt;tr&gt;
+&lt;td class=&quot;left&quot;&gt;&lt;code&gt;C-a&lt;/code&gt;&lt;/td&gt;
+&lt;td class=&quot;left&quot;&gt;&lt;code&gt;move-beginning-of-line&lt;/code&gt;&lt;/td&gt;
+&lt;/tr&gt;
+
+&lt;tr&gt;
+&lt;td class=&quot;left&quot;&gt;&lt;code&gt;C-e&lt;/code&gt;&lt;/td&gt;
+&lt;td class=&quot;left&quot;&gt;&lt;code&gt;move-end-of-line&lt;/code&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+
+&lt;p&gt;
+There&apos;s been a lot of cursing and teeth gnashing about Emacs&apos; default
+key bindings, but here are some of the benefits that I&apos;ve come to
+appreciate over time:
+&lt;/p&gt;
+
+&lt;ol class=&quot;org-ol&quot;&gt;
+&lt;li&gt;Clustering &amp;#x2013; you can insert and move around with minimal physical
+movement from the &lt;i&gt;home row&lt;/i&gt; of the keyboard.
+&lt;/li&gt;
+
+&lt;li&gt;Easy to remember
+&lt;/li&gt;
+
+&lt;li&gt;Work in &lt;code&gt;bash&lt;/code&gt; and even on tty devices (never say never) - this is
+particularly useful if you&apos;re planning to do some remote pairing
+over &lt;code&gt;tmux&lt;/code&gt; or &lt;code&gt;screen&lt;/code&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;
+And, there is always &lt;code&gt;C-h b&lt;/code&gt; &lt;code&gt;describe-bindings&lt;/code&gt; which will list the
+key bindings in any given buffer.
+&lt;/p&gt;
+
+&lt;p&gt;
+Other useful basic key bindings:
+&lt;/p&gt;
+
+&lt;table border=&quot;2&quot; cellspacing=&quot;0&quot; cellpadding=&quot;6&quot; rules=&quot;groups&quot; frame=&quot;hsides&quot;&gt;
+
+
+&lt;colgroup&gt;
+&lt;col  class=&quot;left&quot; /&gt;
+
+&lt;col  class=&quot;left&quot; /&gt;
+
+&lt;col  class=&quot;left&quot; /&gt;
+&lt;/colgroup&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th scope=&quot;col&quot; class=&quot;left&quot;&gt;Keybinding&lt;/th&gt;
+&lt;th scope=&quot;col&quot; class=&quot;left&quot;&gt;Command&lt;/th&gt;
+&lt;th scope=&quot;col&quot; class=&quot;left&quot;&gt;Doc&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td class=&quot;left&quot;&gt;&lt;code&gt;C-l&lt;/code&gt;&lt;/td&gt;
+&lt;td class=&quot;left&quot;&gt;&lt;code&gt;recenter&lt;/code&gt;&lt;/td&gt;
+&lt;td class=&quot;left&quot;&gt;redraw buffer with the current line at the vertical center of the window; one useful variation is to &lt;code&gt;C-u 0 C-l&lt;/code&gt; which will redraw the buffer with the current line at the top of the window&lt;/td&gt;
+&lt;/tr&gt;
+
+&lt;tr&gt;
+&lt;td class=&quot;left&quot;&gt;&lt;code&gt;C-SPC&lt;/code&gt;&lt;/td&gt;
+&lt;td class=&quot;left&quot;&gt;&lt;code&gt;set-mark-command&lt;/code&gt;&lt;/td&gt;
+&lt;td class=&quot;left&quot;&gt;set the beginning of a copy/cut region, and move the cursor to the end of the region&lt;/td&gt;
+&lt;/tr&gt;
+
+&lt;tr&gt;
+&lt;td class=&quot;left&quot;&gt;&lt;code&gt;C-w&lt;/code&gt;&lt;/td&gt;
+&lt;td class=&quot;left&quot;&gt;&lt;code&gt;kill-region&lt;/code&gt;&lt;/td&gt;
+&lt;td class=&quot;left&quot;&gt;cut the contents of the selected region&lt;/td&gt;
+&lt;/tr&gt;
+
+&lt;tr&gt;
+&lt;td class=&quot;left&quot;&gt;&lt;code&gt;M-w&lt;/code&gt;&lt;/td&gt;
+&lt;td class=&quot;left&quot;&gt;&lt;code&gt;kill-ring-save&lt;/code&gt;&lt;/td&gt;
+&lt;td class=&quot;left&quot;&gt;copy (not cut) the contents of the selected region&lt;/td&gt;
+&lt;/tr&gt;
+
+&lt;tr&gt;
+&lt;td class=&quot;left&quot;&gt;&lt;code&gt;C-y&lt;/code&gt;&lt;/td&gt;
+&lt;td class=&quot;left&quot;&gt;&lt;code&gt;yank&lt;/code&gt;&lt;/td&gt;
+&lt;td class=&quot;left&quot;&gt;paste the most recently copied/cut region at cursor point&lt;/td&gt;
+&lt;/tr&gt;
+
+&lt;tr&gt;
+&lt;td class=&quot;left&quot;&gt;&lt;code&gt;M-y&lt;/code&gt;&lt;/td&gt;
+&lt;td class=&quot;left&quot;&gt;&lt;code&gt;yank-pop&lt;/code&gt;&lt;/td&gt;
+&lt;td class=&quot;left&quot;&gt;when used after a &lt;code&gt;yank&lt;/code&gt;, Emacs will replace the pasted region with older copied text cycling through the cut/copy history&lt;/td&gt;
+&lt;/tr&gt;
+
+&lt;tr&gt;
+&lt;td class=&quot;left&quot;&gt;&lt;code&gt;C-x r k&lt;/code&gt;&lt;/td&gt;
+&lt;td class=&quot;left&quot;&gt;&lt;code&gt;kill-rectangle&lt;/code&gt;&lt;/td&gt;
+&lt;td class=&quot;left&quot;&gt;mark a region as you would normally, but cut a rectangular sub-region. Useful when working with columns of data&lt;/td&gt;
+&lt;/tr&gt;
+
+&lt;tr&gt;
+&lt;td class=&quot;left&quot;&gt;&lt;code&gt;C-x r y&lt;/code&gt;&lt;/td&gt;
+&lt;td class=&quot;left&quot;&gt;&lt;code&gt;yank-rectangle&lt;/code&gt;&lt;/td&gt;
+&lt;td class=&quot;left&quot;&gt;paste the most recently killed rectangular region&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+
+&lt;div id=&quot;outline-container-sec-4&quot; class=&quot;outline-2&quot;&gt;
+&lt;h2 id=&quot;sec-4&quot;&gt;Keyboard Macros&lt;/h2&gt;
+&lt;div class=&quot;outline-text-2&quot; id=&quot;text-4&quot;&gt;
+&lt;p&gt;
+We&apos;ve all been in situations where we&apos;ve had to fix up some literal
+data structure or otherwise munge code by repeating a set of editing
+keystrokes, either deleting, inserting or otherwise splicing
+text. Keyboard macros can quickly help automate some of this work.
+&lt;/p&gt;
+
+&lt;p&gt;
+The basic principle is that you begin recording a macro &lt;code&gt;C-x (&lt;/code&gt;
+&lt;code&gt;kmacro-start-macro&lt;/code&gt;, perform the keyboard actions, and then end
+recording with &lt;code&gt;C-x )&lt;/code&gt; &lt;code&gt;kmacro-end-macro&lt;/code&gt;. You can then replay the
+macro using &lt;code&gt;C-x e&lt;/code&gt; &lt;code&gt;kmacro-end-and-call-macro&lt;/code&gt;. Also, check out
+&lt;code&gt;C-x C-k n&lt;/code&gt; &lt;code&gt;kmacro-name-last-macro&lt;/code&gt; for oft repeated macros.
+&lt;/p&gt;
+
+&lt;p&gt;
+&lt;i&gt;Next post:&lt;/i&gt; REPL, SLIME and interactive programming.
+&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+</description></item><item><title>ECL for iOS update for ECL-11.1.1, Xocde 4, and SDK 4.3</title><link>http://kriyative.github.com/2011/03/26/ecl-for-ios-updated/</link><description>&lt;p&gt;
+I&apos;ve committed a new branch of ECL for iOS, which now requires
+ECL-11.1.1 (latest stable), and produces functioning device binaries
+for armv6 and armv7 architectures using Xcode 4 and SDK 4.3. This
+release has been tested on iPhone and iPad devices running iOS 4.3.1.
+&lt;/p&gt;
+
+&lt;p&gt;
+Please refer to the updated README for further details.
+&lt;/p&gt;
+
+&lt;p&gt;
+&lt;a href=&quot;https://github.com/kriyative/ecl-iphone-builder/tree/elf&quot;&gt;https://github.com/kriyative/ecl-iphone-builder/tree/elf&lt;/a&gt;
+&lt;/p&gt;
+
+&lt;p&gt;
+Please note that the earlier release branch `dragon&apos; has also been
+updated to work with Xcode 4, and SDK 4.3. However, it continues to be
+based on ECL-10.4.1.
+&lt;/p&gt;
+
+&lt;p&gt;
+&lt;a href=&quot;https://github.com/kriyative/ecl-iphone-builder/tree/dragon&quot;&gt;https://github.com/kriyative/ecl-iphone-builder/tree/dragon&lt;/a&gt;
+&lt;/p&gt;
+
+&lt;p&gt;
+Many thanks to &lt;a href=&quot;http://mclide.in-progress.com/&quot;&gt;Terje Norderhaug&lt;/a&gt; for his help with this update.
+&lt;/p&gt;
+</description></item><item><title>clojurejs -- a Clojure (subset) to Javascript translator</title><link>http://kriyative.github.com/2011/01/10/clojurejs-announcement/</link><description>&lt;p&gt;
+I&apos;m releasing &lt;a href=&quot;http://github.com/kriyative/clojurejs&quot;&gt;clojurejs&lt;/a&gt; &amp;#x2013; a Clojure library for translating a Clojure
+subset language to Javascript. The code is on github reachable at the
+following link:
+&lt;/p&gt;
+
+&lt;p&gt;
+&lt;a href=&quot;http://github.com/kriyative/clojurejs&quot;&gt;http://github.com/kriyative/clojurejs&lt;/a&gt;
+&lt;/p&gt;
+
+&lt;p&gt;
+clojurejs is something I&apos;ve been working on for a few weeks as part of
+a larger web app in Clojure. The code&apos;s a bit crufty (reflects my
+incremental discovery of the inconsistencies in Javascript), but
+functional and I wanted put something out there for people to check
+out. I welcome bug reports and feedback. It&apos;s been useful for my
+specific needs, and I&apos;d be happy if it&apos;s even marginally useful to
+others.
+&lt;/p&gt;
+
+&lt;p&gt;
+I realize there are a number of other efforts to compile/translate
+Clojure (or other Lisp subset) to Javascript, but nothing quite fit my
+requirements, which prompted me to build clojurejs. Some useful
+aspects of clojurejs are:
+&lt;/p&gt;
+
+&lt;ul class=&quot;org-ul&quot;&gt;
+&lt;li&gt;Consistent scoping in let and loop/recur forms
+&lt;/li&gt;
+&lt;li&gt;Macros with defmacro
+&lt;/li&gt;
+&lt;li&gt;Implicit return from all forms
+&lt;/li&gt;
+&lt;li&gt;loop/recur translates to Javascript for loops
+&lt;/li&gt;
+&lt;li&gt;Translates Clojure vectors, strings, keywords, symbols and maps to
+Javascript equivalents
+&lt;/li&gt;
+&lt;li&gt;dot form access to methods and properties
+&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;
+Here&apos;s an example from the README:
+&lt;/p&gt;
+
+&lt;pre class=&quot;example&quot;&gt;
+(js
+ (defn join [arr delim]
+   (loop [str (get arr 0)
+          i 1]
+     (if (&amp;lt; i (length arr))
+       (recur (+ str delim (get arr i))
+              (+ i 1))
+       str))))
+&lt;/pre&gt;
+
+&lt;p&gt;
+translates to the following Javascript:
+&lt;/p&gt;
+
+
+&lt;pre class=&quot;example&quot;&gt;
+join = function(arr, delim) {
+    return (function () {
+        for (var str = arr[0],i = 1; true;) {
+            if ((i &amp;lt; arr.length)) {
+                str = (str + delim + arr[i]);
+                i = (i + 1);
+                continue;
+            } else {
+                return str;
+            } break;
+        }
+    })();
+}
+&lt;/pre&gt;
+
+&lt;p&gt;
+Documentation is regrettably scarce, but there are more details in the
+README file, boot.cljs, and the unit tests. I hope to add more
+documentation and examples in the next few weeks. Stay tuned.
+&lt;/p&gt;
+</description></item><item><title>Lisp functions as UI callbacks in ECL/iOS</title><link>http://kriyative.github.com/2010/12/20/lisp-functions-ui-callbacks-ecl-ios/</link><description>&lt;p&gt;
+There&apos;s been a bit of recent interest in building &quot;real&quot; apps using
+ECL/iOS. While the `eclffi&apos; sample code in the &lt;a href=&quot;https://github.com/kriyative/ecl-iphone-builder/tree/centaur&quot;&gt;ecl-iphone-builder&lt;/a&gt; repo
+included examples of how to create/call Objective-C classes/methods
+from Lisp, it was missing the glue to go the other way, which was
+necessary to implement callbacks in Lisp. I&apos;ve pushed an update to
+github which adds this functionality.
+&lt;/p&gt;
+
+&lt;p&gt;
+As an example I created a subclass of &lt;code&gt;UIButton&lt;/code&gt; called &lt;code&gt;UIButtonCB&lt;/code&gt;
+with one instance var called &lt;code&gt;clickHandler&lt;/code&gt;, which can be set to a
+Lisp function pointer. The &lt;code&gt;UIButtonCB&lt;/code&gt; class wires the
+&lt;code&gt;UIControlEventTouchUpInside&lt;/code&gt; event to the specified handler function.
+&lt;/p&gt;
+
+&lt;pre class=&quot;example&quot;&gt;
+@implementation UIButtonCB
+
+- (id) initWithFrame: (CGRect) aFrame
+{
+    [super initWithFrame: aFrame];
+    clickHandler = Cnil;
+    [self addTarget: self action: @selector(clicked:) forControlEvents: UIControlEventTouchUpInside];
+    return self;
+}
+
+- (void) setClickHandler: (cl_object) fun
+{
+    register_cb(clickHandler, fun);
+}
+
+- (void) clicked: (id) sender
+{
+    if (Cnil != clickHandler) {
+        cl_funcall(2, clickHandler, ecl_foreign_data_ref_elt(&amp;amp;sender,ECL_FFI_POINTER_VOID));
+    }
+}
+
+- (void) dealloc
+{
+    remove_cb(clickHandler);
+    clickHandler = Cnil;
+    [super dealloc];
+}
+&lt;/pre&gt;
+
+&lt;p&gt;
+The call to &lt;code&gt;register_cb()&lt;/code&gt; ensures that the callback function is
+protected from GC, and &lt;code&gt;remove_cb()&lt;/code&gt; makes the function GC&apos;able
+again. &lt;code&gt;UIButtonCB&lt;/code&gt; can now be wrapped in Lisp with the following FFI
+glue:
+&lt;/p&gt;
+
+&lt;pre class=&quot;example&quot;&gt;
+(defun set-click-handler (view fun)
+  (when fun
+    (c-fficall ((view :pointer-void)
+                ((make-callback-function fun) :object))
+        :void
+      &quot;[#0 setClickHandler: #1];&quot;)))
+
+(defun make-button (&amp;amp;rest init-view-args &amp;amp;key title title-color icon
+                    on-click (enabled t) &amp;amp;allow-other-keys)
+  (let ((view (make-view-instance &quot;UIButtonCB&quot; init-view-args)))
+    (set-click-handler view on-click)
+    (when icon (set-image view icon))
+    (when title (set-title view title))
+    (when title-color (set-title-color view title-color))
+    (set-enabled view enabled)
+    view))
+&lt;/pre&gt;
+
+&lt;p&gt;
+Here&apos;s an example of the Lisp code to create a button with an on-click
+callback, which updates a label:
+&lt;/p&gt;
+
+&lt;pre class=&quot;example&quot;&gt;
+(let ((n 0)
+      (label (make-label &quot;&quot; :frame &apos;(10.0 50.0 300.0 35.0))))
+  (add-subview (key-window) label)
+  (add-subview (key-window)
+               (make-button :frame &apos;(140 230 40 20)
+                            :title &quot;click&quot;
+                            :background-color (color-argb 1 0.5 0.5 0.5)
+                            :on-click (lambda (button)
+                                        (declare (ignore button))
+                                        (set-text label
+                                                  (format nil
+                                                          &quot;~d click~:p&quot;
+                                                          (incf n)))))))
+&lt;/pre&gt;
+
+&lt;p&gt;
+Obviously, this isn&apos;t a very sophisticated approach, but it&apos;s a
+start. It requires subclassing each UIControl or UIView to add the
+vars to store the Lisp callbacks. I&apos;m sure there&apos;s ample room for
+abstracting or automating some of this boilerplate Objective C code.
+&lt;/p&gt;
+</description></item><item><title>ECL for iOS updated to work with SDK 4.2</title><link>http://kriyative.github.com/2010/12/14/ecl-for-ios-updated/</link><description>&lt;p&gt;
+I&apos;ve pushed a new branch (centaur) of the ECL for iOS project to
+github, which contains a number of fixes to get ECL compiled under the
+latest 4.2 SDK from Apple. This release has been tested on iPhone and
+iPad devices running iOS 4.2 as well as the older 3.1.3. Please refer
+to the updated README for further details.
+&lt;/p&gt;
+
+&lt;p&gt;
+&lt;a href=&quot;http://github.com/kriyative/ecl-iphone-builder/tree/centaur&quot;&gt;http://github.com/kriyative/ecl-iphone-builder/tree/centaur&lt;/a&gt;
+&lt;/p&gt;
+
+&lt;p&gt;
+Many thanks to &lt;a href=&quot;http://mclide.in-progress.com/&quot;&gt;Terje Norderhaug&lt;/a&gt; and &lt;a href=&quot;http://www.facebook.com/profile.php?id=1019202159&quot;&gt;Anthony Fairchild&lt;/a&gt; for their bug
+reports and feedback.
+&lt;/p&gt;
+</description></item><item><title>Displaying a daily Org-mode agenda reminder in Emacs</title><link>http://kriyative.github.com/2010/03/23/daily-org-agenda-reminder/</link><description>&lt;p&gt;
+Here&apos;s a simple hack to get an Org-mode agenda view to popup in an
+Emacs buffer, daily at a specified time.
+&lt;/p&gt;
+
+&lt;pre class=&quot;example&quot;&gt;
+(defvar daily-agenda-timer (parse-relative-time &quot;9:00 am&quot;))
+;; (decode-time daily-agenda-timer)
+ 
+(defun show-daily-agenda ()
+  (unless (time-less-p (current-time) daily-agenda-timer)
+    (setq daily-agenda-timer (time-add daily-agenda-timer
+                                       (seconds-to-time 86400)))
+    (org-agenda-list)))
+ 
+(add-hook &apos;display-time-hook &apos;show-daily-agenda)
+(display-time)
+&lt;/pre&gt;
+
+&lt;p&gt;
+The &lt;code&gt;parse-relative-time&lt;/code&gt; function helps in initializing the
+&lt;code&gt;daily-agenda-timer&lt;/code&gt; using a human readable string.
+&lt;/p&gt;
+
+&lt;pre class=&quot;example&quot;&gt;
+(defun parse-relative-time (time-str)
+  (destructuring-bind (sec min hour day month year dow dst zone)
+      (parse-time-string time-str)
+    (destructuring-bind (sec1 min1 hour1 day1 month1 year1 dow1 dst1 zone1)
+        (decode-time)
+      (encode-time (or sec sec1)
+                   (or min min1)
+                   (or hour hour1)
+                   (or day day1)
+                   (or month month1)
+                   (or year year1)
+                   (or zone zone1)))))
+&lt;/pre&gt;
+</description></item></channel></rss>

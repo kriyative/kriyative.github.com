@@ -1,3 +1,189 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<rss version="2.0"><channel><title>slime posts from kriyative</title><link>http://kriyative.github.com</link><description></description><item><title> clojure-mode and slime</title><link>http://kriyative.github.com/2013/03/03/clojure-mode-and-slime/</link><description>clojure.lang.Delay@3e3d101</description></item><item><title> clojure, emacs, and docs redux</title><link>http://kriyative.github.com/2013/03/02/clojure-emacs-docs-redux/</link><description>clojure.lang.Delay@7898fc6a</description></item><item><title>clojure, emacs, and javadocs</title><link>http://kriyative.github.com/2009/06/21/clojure-emacs-and-javadocs/</link><description>clojure.lang.Delay@55cc2562</description></item></channel></rss>
+<rss version="2.0"><channel><title>slime posts from kriyative</title><link>http://kriyative.github.com</link><description></description><item><title> clojure-mode and slime</title><link>http://kriyative.github.com/2013/03/03/clojure-mode-and-slime/</link><description>&lt;p&gt;
+As a long time user of &lt;a href=&quot;http://common-lisp.net/project/slime/&quot;&gt;SLIME&lt;/a&gt; I was a bit disappointed to see
+clojure-mode 2.0 drop support for it in favor of &lt;code&gt;nrepl&lt;/code&gt;. I looked
+into &lt;code&gt;nrepl&lt;/code&gt; but found it to be not as feature complete as SLIME, at
+present. Also, I still work on some sizeable Common Lisp code, which
+relies entirely on SLIME, and I want to be able leverage any tooling
+work I do across all my projects &amp;#x2013; so SLIME wins.
+&lt;/p&gt;
+
+&lt;p&gt;
+As it turns out, it wasn&apos;t at all difficult to resurrect the SLIME
+integration code from clojure-mode 1.x and load it alongside the newer
+clojure-mode.
+&lt;/p&gt;
+
+&lt;p&gt;
+I&apos;ve committed the &lt;code&gt;clojure-mode-slime.el&lt;/code&gt; Emacs Lisp code into the
+following repo, along with some other Clojure/Emacs hacks:
+&lt;/p&gt;
+
+&lt;p&gt;
+&lt;a href=&quot;http://github.com/kriyative/clojure-emacs-hacks&quot;&gt;http://github.com/kriyative/clojure-emacs-hacks&lt;/a&gt;
+&lt;/p&gt;
+
+&lt;p&gt;
+I hope this is useful to other SLIME die-hards in the Clojure
+community as well.  Feedback and bug reports are most welcome.
+&lt;/p&gt;
+</description></item><item><title> clojure, emacs, and docs redux</title><link>http://kriyative.github.com/2013/03/02/clojure-emacs-docs-redux/</link><description>&lt;p&gt;
+A while back I&apos;d &lt;a href=&quot;http:/2009/06/21/clojure-emacs-and-javadocs/&quot;&gt;written&lt;/a&gt; about looking up Javadocs from Clojure mode
+buffers. I got some good feedback on that post, so I thought I&apos;d try
+and expand on that and see if I could integrate other Clojure
+documentation sources into a similar workflow.
+&lt;/p&gt;
+
+&lt;div class=&quot;figure&quot;&gt;
+  &lt;a href=&quot;/assets/2013/03/02/w3m-javadoc.jpg&quot;&gt;
+    &lt;img src=&quot;/assets/2013/03/02/w3m-javadoc.jpg&quot; width=&quot;400&quot;/&gt;
+  &lt;/a&gt;
+  &lt;h1&gt;view javadocs in emacs/w3m (click to view full size)&lt;/h1&gt;
+&lt;/div&gt;
+
+&lt;p&gt;
+Looking up Clojure doc strings within Emacs is really easy. In any
+Clojure code buffer, you can place your cursor at a symbol and use
+&lt;code&gt;C-c C-d d&lt;/code&gt; or &lt;code&gt;M-x slime-describe-symbol&lt;/code&gt; to bring up the function or
+var doc string.
+&lt;/p&gt;
+
+&lt;p&gt;
+Previously, I&apos;d made a &lt;code&gt;slime-javadoc&lt;/code&gt; command that could be
+configured to search external Javadoc sources only. However, that
+mechanism could be applied more generally to more sources.
+&lt;/p&gt;
+
+&lt;p&gt;
+The new command &lt;code&gt;M-x clojuredocs&lt;/code&gt;, can show either Javadocs for Java
+classes, or goes to the excellent &lt;a href=&quot;http://clojuredocs.org&quot;&gt;clojuredocs.org&lt;/a&gt; site for
+documentation specific to &lt;code&gt;clojure.core&lt;/code&gt; and a few other namespaces
+(such as &lt;code&gt;ring&lt;/code&gt;), or eventually fallsback to a simple Google search.
+&lt;/p&gt;
+
+&lt;p&gt;
+So, after connecting to a Clojure instance (via &lt;code&gt;clojure-jack-in&lt;/code&gt; or
+&lt;code&gt;slime-connect&lt;/code&gt;), I can invoke &lt;code&gt;M-x clojuredocs&lt;/code&gt; on any symbol and get
+back some relevant documentation or at the least som helpful pointers
+from Google.
+&lt;/p&gt;
+
+&lt;p&gt;
+I&apos;ve committed an initial version of the Emacs Lisp code into the
+following github repo:
+&lt;/p&gt;
+
+&lt;p&gt;
+&lt;a href=&quot;http://github.com/kriyative/clojure-emacs-hacks&quot;&gt;http://github.com/kriyative/clojure-emacs-hacks&lt;/a&gt;
+&lt;/p&gt;
+
+&lt;p&gt;
+Feedback and bug reports are most welcome.
+&lt;/p&gt;
+</description></item><item><title>clojure, emacs, and javadocs</title><link>http://kriyative.github.com/2009/06/21/clojure-emacs-and-javadocs/</link><description>&lt;p&gt;
+In the course of my recent work, integrating various java libraries
+with clojure, I spent a lot of time going back and forth between emacs
+and firefox, just to read java api documentation. I even tried loading
+up the &quot;All Classes&quot; index from the java api docs in an emacs/w3m
+buffer and isearch-ing through it. It was a far from optimal
+experience, and I decided to hack something using clojure and slime.
+&lt;/p&gt;
+
+&lt;p&gt;
+Bill Clementson had posted a great intro to javadoc and clojure/slime,
+but I was looking for something that wouldnt&apos; require me to leave
+emacs just to read documentation, and that too java api docs.
+&lt;/p&gt;
+
+&lt;p&gt;
+Ideally, I wanted to be able able to put the cursor on any java class
+symbol in a clojure-mode buffer in emacs, execute &lt;code&gt;M-x slime-javadoc&lt;/code&gt;,
+and have the api documentation popup in an adjacent emacs window.
+&lt;/p&gt;
+
+&lt;p&gt;
+Turns out the hardest part of implementing this was in resolving an
+unqualified class name to its fully qualified form, before looking up
+its documentation path. For example,
+&lt;/p&gt;
+
+&lt;pre class=&quot;example&quot;&gt;
+(ns example
+  (:import (java.util UUID)))
+
+(defn uuid []  (.toString (UUID/randomUUID)))
+&lt;/pre&gt;
+
+&lt;p&gt;
+Looking up the javadoc on UUID should really be on &lt;code&gt;java.util.UUID&lt;/code&gt;,
+which clojure knows. So, the core of the hack is a clojure function,
+which takes the symbol at point (&quot;UUID&quot; in this case), and the current
+namespace (&quot;example&quot;) and returns a fully qualified class name
+&quot;java.util.UUID&quot;. That function, implemented as a slime command looks
+like the following:
+&lt;/p&gt;
+
+&lt;pre class=&quot;example&quot;&gt;
+(swank.commands/defslimefn resolve-symbol [sym ns-name]
+  (when-let [the-class (ns-resolve (find-ns (symbol ns-name))
+                                   (symbol sym))]
+    (.getName the-class)))
+&lt;/pre&gt;
+
+&lt;p&gt;
+Now all we need is emacs to clean up the symbol at point, and call
+this function via slime.
+&lt;/p&gt;
+
+&lt;pre class=&quot;example&quot;&gt;
+(defun slime-javadoc (symbol-name)
+  &quot;Get JavaDoc documentation on Java class at point.&quot;
+  (interactive (list (slime-read-symbol-name &quot;JavaDoc info for: &quot;)))
+  (or symbol-name (error &quot;No symbol given&quot;))
+  (let ((class-name (slime-eval
+                     (list &apos;resolve-symbol
+                           (first
+                            (split-string (trim-trailing-dot symbol-name)
+                                          &quot;/&quot;))
+                           (slime-current-package)))))
+    (if class-name
+        (browse-url
+         (concat (javadoc-root class-name)
+                 (subst-char-in-string ?$
+                                       ?.
+                                       (subst-char-in-string ?.
+                                                             ?/
+                                                             class-name))
+                 &quot;.html&quot;))
+      (message &quot;No javadoc found for %s&quot; symbol-name))))
+&lt;/pre&gt;
+
+&lt;p&gt;
+The &lt;code&gt;javadoc-root&lt;/code&gt; function is just a way to dispatch to different
+javadoc paths (local or online), based on the package names. For
+example, by defining:
+&lt;/p&gt;
+
+&lt;pre class=&quot;example&quot;&gt;
+(setq javadoc-alist
+      &apos;((&quot;^\\(java[x]?\.\\|org\.ietf\.\\|org\.omg\.\\|org\.w3c\.\\|org\.xml\.\\)&quot; .
+         &quot;file://opt/java/docs/api/&quot;)
+        (&quot;^org\.jets3t&quot; . &quot;file://opt/java/jets3t-0.7.0/api-docs/&quot;)
+        (&quot;^com\.xerox\.amazonws&quot; . &quot;file://opt/java/typica-1.5.2a/apidocs/&quot;)
+        (&quot;^org\.mortbay&quot; . &quot;http://www.mortbay.org/apidocs/&quot;)))
+&lt;/pre&gt;
+
+&lt;p&gt;
+Now, emacs/w3m will load the right documentation, based on the class
+package prefix.
+&lt;/p&gt;
+
+&lt;p&gt;
+The code is available on &lt;a href=&quot;http://github.com/kriyative/cynojure-swank/tree/master&quot;&gt;github&lt;/a&gt;.
+&lt;/p&gt;
+
+&lt;p&gt;
+Unity.
+&lt;/p&gt;
+</description></item></channel></rss>
