@@ -98,3 +98,11 @@ input { font-size: 1em; }
 .figure a:hover { border: solid 1px darkred; padding: 0px; }
 .figure img { border: solid 1px #ccc; }
 .figure h1 { font-size: 70%; }
+
+.footpara {
+    font-size: 0.7em;
+    display: inline;
+    margin-left: 0.25em;
+}
+
+.footdef { margin-bottom: 1em; }
