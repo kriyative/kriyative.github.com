@@ -1,5 +1,6 @@
 #+title: Emacs for Clojure - Part 2
 #+tags: clojure emacs
+#+options: toc:nil num:nil
 
 This is the second in a two part post about a Clojure programmer
 workflow entirely within Emacs.

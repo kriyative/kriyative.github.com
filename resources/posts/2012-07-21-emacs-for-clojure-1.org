@@ -1,5 +1,6 @@
 #+title: Emacs for Clojure - Part 1
 #+tags: clojure emacs
+#+options: toc:nil num:nil
 
 This is a brief overview of the way I work in Clojure using Emacs -
 almost exclusively. Obviously, Emacs is not the only way to interact
