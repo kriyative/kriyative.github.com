@@ -1,0 +1,40 @@
+#+title:  Clojure and Decomplecting data analysis for business users
+#+tags: clojure juxt.io data-analysis
+
+*TL;DR* Data analysis has a lot of /incidental complexity/. Composable abstractions can help reduce this. Clojure solves this for developers, but can this be extended to business users who are non-coders? Developers want to continue writing programs in code, but business teams need ways to discover, configure and run them directly and independently. Could a Yahoo Pipes-like approach to data analysis bridge this gap?
+
+Analyzing data with software tools is rife with /incidental complexity/ [1] - by which I mean the myriad data formats and shapes, algorithms, APIs and programming languages that one has to wrangle with.
+
+Clojure's functional abstractions and composability help dramatically reduce many of these incidental complexities - at least for developers. We are able to quickly build robust and reusable pipelines of data processing code and put them together in different combinations to tackle each, seemingly one-off, problem.
+
+That's great for us. But, in most companies, Data Analysis cuts across many functional boundaries. We need to extend the flexibility in abstraction and composition beyond developers to business teams.
+
+The average off-the-shelf data analytics tool for business users is either severely feature constrained in the name of ease-of-use, or profusely leaks its thinly wrapped programming language abstractions in the name of power. A savvy business user who needs something more expressive than Excel, without having to become a software engineer, doesn't have very many options. [2]
+
+I care deeply about this problem, because I have personally experienced this pain point. As a dev lead supporting a business team I've seen simple report requests turn into multi man-week software projects. The business users were frustrated waiting for weeks to see their /minor/ report requests. And the devs were unhappy having to work on /pointless/ reports all the time.
+
+Essentially, developers want to continue creating their core value as software abstractions in code, and business teams need to be able to discover, configure and run them directly and independently. The UNIX shell is a classic example of this from a bygone era when business users actually wrote shell scripts. But, we can do better than the stream of bytes abstraction of the UNIX pipes, and fix some of other shell problems along the way. [3]
+
+At [[http://blog.juxt.io/analytics/demo/juxt/2015/09/02/introducing-juxt/][juxt.io]], my co-founder Panch and I are working on this exact problem, which had dogged us in our past jobs. Our approach is to give business users a powerful and extensible platform, into which developers can directly contribute their code abstractions as content. Using a visual and interactive UX  business users can drag and drop functional components onto a design canvas and wire them together and compose higher order functionality.
+
+# <<workbench-screenshot>>
+#+BEGIN_HTML
+<div class="figure">
+  <a href="/assets/2015/09/15/movielens-flow.png">
+    <img src="/assets/2015/09/15/movielens-flow.png" width="600"/>
+  </a>
+  <h1>juxt.io Interactive Data Analysis Workbench</h1>
+</div>
+#+END_HTML
+
+Juxt.io builds upon ideas from previous systems like [[https://en.wikipedia.org/wiki/Yahoo!_Pipes][Yahoo Pipes]], [[https://en.wikipedia.org/wiki/Quartz_Composer][Apple Quartz Composer]] and [[https://en.wikipedia.org/wiki/Scratch_(programming_language)][MIT Scratch]] to create an interactive data analysis workbench in which Analytics, ML and Web API components can be composed together, using Clojure as the extension language and Clojure's rich data structures.
+
+That's the really high level picture. I'll dive into more of the details about the implementation stack, and some of the challenges and learning in upcoming posts.
+
+*Thanks* to Panch Chandrasekaran and Sujatha Jagannathan for their feedback on early drafts of this post.
+
+[1] Incidental (or accidental) complexity as opposed to the essential complexity of any given problem. See [[https://en.wikipedia.org/wiki/No_Silver_Bullet][Fred Brooks' No Silver Bullet (wikipedia)]].
+
+[2] Yes, Excel has a Turing complete macro language but it's a huge leap from the worksheet's visual UX. There's also [[https://github.com/whamtet/Excel-REPL][Excel-REPL]], which is a nice idea but doesn't address the Excel side of the problem.
+
+[3] See [[https://en.wikipedia.org/wiki/Unix_shell][UNIX Shell]] and [[https://en.wikipedia.org/wiki/The_Unix-Haters_Handbook][The UNIX-Haters Handbook]] Chapter 8
