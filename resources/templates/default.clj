@@ -67,7 +67,7 @@
       [:h1 "Links"]
       [:ul
        [:li [:a {:href "https://github.com/kriyative"} "Github"]]
-       [:li [:a {:href "http://www.ingeniousmonkey.com"} "IngeniousMonkey"]]]
+       [:li [:a {:href "http://juxt.io"} "Juxt.IO"]]]
 
       [:p "I sometimes post on "
        [:a {:href "http://twitter.com/funcall"} "twitter"] "."]]
