@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<rss version="2.0"><channel><title>data-analysis posts from kriyative</title><link>http://kriyative.github.com</link><description></description><item><title> Clojure and Decomplecting data analysis for business users</title><link>http://kriyative.github.com/2015/09/15/decomplecting-data/</link><description>&lt;p&gt;
+&lt;b&gt;TL;DR&lt;/b&gt; Data analysis has a lot of &lt;i&gt;incidental complexity&lt;/i&gt;. Composable abstractions can help reduce this. Clojure solves this for developers, but can this be extended to business users who are non-coders? Developers want to continue writing programs in code, but business teams need ways to discover, configure and run them directly and independently. Could a Yahoo Pipes-like approach to data analysis bridge this gap?
+&lt;/p&gt;
+
+&lt;p&gt;
+Analyzing data with software tools is rife with &lt;i&gt;incidental complexity&lt;/i&gt; &lt;sup&gt;&lt;a id=&quot;fnr.1&quot; name=&quot;fnr.1&quot; class=&quot;footref&quot; href=&quot;#fn.1&quot;&gt;1&lt;/a&gt;&lt;/sup&gt; - by which I mean the myriad data formats and shapes, algorithms, APIs and programming languages that one has to wrangle with.
+&lt;/p&gt;
+
+&lt;p&gt;
+Clojure&apos;s functional abstractions and composability help dramatically reduce many of these incidental complexities - at least for developers. We are able to quickly build robust and reusable pipelines of data processing code and put them together in different combinations to tackle each, seemingly one-off, problem.
+&lt;/p&gt;
+
+&lt;p&gt;
+That&apos;s great for us. But, in most companies, Data Analysis cuts across many functional boundaries. We need to extend the flexibility in abstraction and composition beyond developers to business teams.
+&lt;/p&gt;
+
+&lt;p&gt;
+The average off-the-shelf data analytics tool for business users is either severely feature constrained in the name of ease-of-use, or profusely leaks its thinly wrapped programming language abstractions in the name of power. A savvy business user who needs something more expressive than Excel, without having to become a software engineer, doesn&apos;t have very many options. &lt;sup&gt;&lt;a id=&quot;fnr.2&quot; name=&quot;fnr.2&quot; class=&quot;footref&quot; href=&quot;#fn.2&quot;&gt;2&lt;/a&gt;&lt;/sup&gt;
+&lt;/p&gt;
+
+&lt;p&gt;
+I care deeply about this problem, because I have personally experienced this pain point. As a dev lead supporting a business team I&apos;ve seen simple report requests turn into multi man-week software projects. The business users were frustrated waiting for weeks to see their &lt;i&gt;minor&lt;/i&gt; report requests. And the devs were unhappy having to work on &lt;i&gt;pointless&lt;/i&gt; reports all the time.
+&lt;/p&gt;
+
+&lt;p&gt;
+Essentially, developers want to continue creating their core value as software abstractions in code, and business teams need to be able to discover, configure and run them directly and independently. The UNIX shell is a classic example of this from a bygone era when business users actually wrote shell scripts. But, we can do better than the stream of bytes abstraction of the UNIX pipes, and fix some of other shell problems along the way. &lt;sup&gt;&lt;a id=&quot;fnr.3&quot; name=&quot;fnr.3&quot; class=&quot;footref&quot; href=&quot;#fn.3&quot;&gt;3&lt;/a&gt;&lt;/sup&gt;
+&lt;/p&gt;
+
+&lt;p&gt;
+At &lt;a href=&quot;http://blog.juxt.io/analytics/demo/juxt/2015/09/02/introducing-juxt/&quot;&gt;juxt.io&lt;/a&gt;, my co-founder Panch and I are working on this exact problem, which had dogged us in our past jobs. Our approach is to give business users a powerful and extensible platform, into which developers can directly contribute their code abstractions as content. Using a visual and interactive UX  business users can drag and drop functional components onto a design canvas and wire them together and compose higher order functionality.
+&lt;/p&gt;
+
+&lt;div class=&quot;figure&quot;&gt;
+  &lt;a href=&quot;/assets/2015/09/15/movielens-flow.png&quot;&gt;
+    &lt;img src=&quot;/assets/2015/09/15/movielens-flow.png&quot; width=&quot;600&quot;/&gt;
+  &lt;/a&gt;
+  &lt;h1&gt;juxt.io Interactive Data Analysis Workbench&lt;/h1&gt;
+&lt;/div&gt;
+
+&lt;p&gt;
+Juxt.io builds upon ideas from previous systems like &lt;a href=&quot;https://en.wikipedia.org/wiki/Yahoo!_Pipes&quot;&gt;Yahoo Pipes&lt;/a&gt;, &lt;a href=&quot;https://en.wikipedia.org/wiki/Quartz_Composer&quot;&gt;Apple Quartz Composer&lt;/a&gt; and &lt;a href=&quot;https://en.wikipedia.org/wiki/Scratch_(programming_language)&quot;&gt;MIT Scratch&lt;/a&gt; to create an interactive data analysis workbench in which Analytics, ML and Web API components can be composed together, using Clojure as the extension language and Clojure&apos;s rich data structures.
+&lt;/p&gt;
+
+&lt;p&gt;
+That&apos;s the really high level picture. I&apos;ll dive into more of the details about the implementation stack, and some of the challenges and learning in upcoming posts.
+&lt;/p&gt;
+
+&lt;p&gt;
+&lt;b&gt;Thanks&lt;/b&gt; to Panch Chandrasekaran and Sujatha Jagannathan for their feedback on early drafts of this post.
+&lt;/p&gt;
+&lt;div id=&quot;footnotes&quot;&gt;
+&lt;h2 class=&quot;footnotes&quot;&gt;Footnotes: &lt;/h2&gt;
+&lt;div id=&quot;text-footnotes&quot;&gt;
+
+&lt;div class=&quot;footdef&quot;&gt;&lt;sup&gt;&lt;a id=&quot;fn.1&quot; name=&quot;fn.1&quot; class=&quot;footnum&quot; href=&quot;#fnr.1&quot;&gt;1&lt;/a&gt;&lt;/sup&gt; &lt;p class=&quot;footpara&quot;&gt;
+Incidental (or accidental) complexity as opposed to the essential complexity of any given problem. See &lt;a href=&quot;https://en.wikipedia.org/wiki/No_Silver_Bullet&quot;&gt;Fred Brooks&apos; No Silver Bullet (wikipedia)&lt;/a&gt;.
+&lt;/p&gt;&lt;/div&gt;
+
+&lt;div class=&quot;footdef&quot;&gt;&lt;sup&gt;&lt;a id=&quot;fn.2&quot; name=&quot;fn.2&quot; class=&quot;footnum&quot; href=&quot;#fnr.2&quot;&gt;2&lt;/a&gt;&lt;/sup&gt; &lt;p class=&quot;footpara&quot;&gt;
+Yes, Excel has a Turing complete macro language but it&apos;s a huge leap from the worksheet&apos;s visual UX. There&apos;s also &lt;a href=&quot;https://github.com/whamtet/Excel-REPL&quot;&gt;Excel-REPL&lt;/a&gt;, which is a nice idea but doesn&apos;t address the Excel side of the problem.
+&lt;/p&gt;&lt;/div&gt;
+
+&lt;div class=&quot;footdef&quot;&gt;&lt;sup&gt;&lt;a id=&quot;fn.3&quot; name=&quot;fn.3&quot; class=&quot;footnum&quot; href=&quot;#fnr.3&quot;&gt;3&lt;/a&gt;&lt;/sup&gt; &lt;p class=&quot;footpara&quot;&gt;
+See &lt;a href=&quot;https://en.wikipedia.org/wiki/Unix_shell&quot;&gt;UNIX Shell&lt;/a&gt; and &lt;a href=&quot;https://en.wikipedia.org/wiki/The_Unix-Haters_Handbook&quot;&gt;The UNIX-Haters Handbook&lt;/a&gt; Chapter 8
+&lt;/p&gt;&lt;/div&gt;
+
+
+&lt;/div&gt;
+&lt;/div&gt;</description></item></channel></rss>
