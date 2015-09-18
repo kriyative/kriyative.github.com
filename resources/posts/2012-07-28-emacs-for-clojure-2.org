@@ -34,7 +34,7 @@ Some other key bindings that are also useful are:
 | =C-M-k=    | =kill-sexp=   |                                                                                                                                                                                             |
 
 Also worth knowing, the magic of /dynamic abbrevs/ bound to the
-@<code>M-/@</code> key binding. Dynamic abbrevs are a quick way to
+=M-/= key binding. Dynamic abbrevs are a quick way to
 complete a long function or var name from a minimal prefix. It's very
 brute force (i.e, just searches for a match in all the open buffers),
 but since it's very fast, it comes in handy when you're working with
