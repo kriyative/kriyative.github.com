@@ -1,0 +1,13 @@
+#+title: My talk at Clojure Conj 2015
+#+tags: clojure juxt.io
+
+I presented my "Clojure for Business Teams - Decomplecting Data Analysis" talk at Clojure Conj 2015 on Monday. I had some technical issues with my laptop in the beginning, but managed to get past them. The audience was incredibly patient and supportive. I really appreciate that.
+
+The video of the talk has already been published on [[https://youtu.be/WNOTVsthhpI][Youtube]], and I've included a PDF of the slide deck I used below [1].
+
+Thanks to the awesome folks who organize Clojure Conj for inviting me to present. Do check out all the other great talks that they've posted also.
+
+[1]
+#+BEGIN_HTML
+<a href="/assets/2015/11/17/2015-conj-talk.pdf">Conj talk slide deck (PDF)</a>
+#+END_HTML

@@ -1,6 +1,25 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<rss version="2.0"><channel><title>kriyative</title><link>http://kriyative.github.com</link><description></description><item><title> Clojure and Decomplecting data analysis for business users</title><link>http://kriyative.github.com/2015/09/15/decomplecting-data/</link><description>&lt;p&gt;
+<rss version="2.0"><channel><title>kriyative</title><link>http://kriyative.github.com</link><description></description><item><title>My talk at Clojure Conj 2015</title><link>http://kriyative.github.com/2015/11/17/clojure-conj-talk/</link><description>&lt;p&gt;
+I presented my &quot;Clojure for Business Teams - Decomplecting Data Analysis&quot; talk at Clojure Conj 2015 on Monday. I had some technical issues with my laptop in the beginning, but managed to get past them. The audience was incredibly patient and supportive. I really appreciate that.
+&lt;/p&gt;
+
+&lt;p&gt;
+The video of the talk has already been published on &lt;a href=&quot;https://youtu.be/WNOTVsthhpI&quot;&gt;Youtube&lt;/a&gt;, and I&apos;ve included a PDF of the slide deck I used below &lt;sup&gt;&lt;a id=&quot;fnr.1&quot; name=&quot;fnr.1&quot; class=&quot;footref&quot; href=&quot;#fn.1&quot;&gt;1&lt;/a&gt;&lt;/sup&gt;.
+&lt;/p&gt;
+
+&lt;p&gt;
+Thanks to the awesome folks who organize Clojure Conj for inviting me to present. Do check out all the other great talks that they&apos;ve posted also.
+&lt;/p&gt;
+&lt;div id=&quot;footnotes&quot;&gt;
+&lt;h2 class=&quot;footnotes&quot;&gt;Footnotes: &lt;/h2&gt;
+&lt;div id=&quot;text-footnotes&quot;&gt;
+
+&lt;div class=&quot;footdef&quot;&gt;&lt;sup&gt;&lt;a id=&quot;fn.1&quot; name=&quot;fn.1&quot; class=&quot;footnum&quot; href=&quot;#fnr.1&quot;&gt;1&lt;/a&gt;&lt;/sup&gt; &lt;a href=&quot;/assets/2015/11/17/2015-conj-talk.pdf&quot;&gt;Conj talk slide deck (PDF)&lt;/a&gt;&lt;/div&gt;
+
+
+&lt;/div&gt;
+&lt;/div&gt;</description></item><item><title> Clojure and Decomplecting data analysis for business users</title><link>http://kriyative.github.com/2015/09/15/decomplecting-data/</link><description>&lt;p&gt;
 &lt;b&gt;TL;DR&lt;/b&gt; Data analysis has a lot of &lt;i&gt;incidental complexity&lt;/i&gt;. Composable abstractions can help reduce this. Clojure solves this for developers, but can this be extended to business users who are non-coders? Developers want to continue writing programs in code, but business teams need ways to discover, configure and run them directly and independently. Could a Yahoo Pipes-like approach to data analysis bridge this gap?
 &lt;/p&gt;
 
@@ -847,21 +866,5 @@ Obviously, this isn&apos;t a very sophisticated approach, but it&apos;s a
 start. It requires subclassing each UIControl or UIView to add the
 vars to store the Lisp callbacks. I&apos;m sure there&apos;s ample room for
 abstracting or automating some of this boilerplate Objective C code.
-&lt;/p&gt;
-</description></item><item><title>ECL for iOS updated to work with SDK 4.2</title><link>http://kriyative.github.com/2010/12/14/ecl-for-ios-updated/</link><description>&lt;p&gt;
-I&apos;ve pushed a new branch (centaur) of the ECL for iOS project to
-github, which contains a number of fixes to get ECL compiled under the
-latest 4.2 SDK from Apple. This release has been tested on iPhone and
-iPad devices running iOS 4.2 as well as the older 3.1.3. Please refer
-to the updated README for further details.
-&lt;/p&gt;
-
-&lt;p&gt;
-&lt;a href=&quot;http://github.com/kriyative/ecl-iphone-builder/tree/centaur&quot;&gt;http://github.com/kriyative/ecl-iphone-builder/tree/centaur&lt;/a&gt;
-&lt;/p&gt;
-
-&lt;p&gt;
-Many thanks to &lt;a href=&quot;http://mclide.in-progress.com/&quot;&gt;Terje Norderhaug&lt;/a&gt; and &lt;a href=&quot;http://www.facebook.com/profile.php?id=1019202159&quot;&gt;Anthony Fairchild&lt;/a&gt; for their bug
-reports and feedback.
 &lt;/p&gt;
 </description></item></channel></rss>
