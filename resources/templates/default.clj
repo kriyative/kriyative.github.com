@@ -91,7 +91,7 @@
              (take 10 (reverse (static.io/list-files :posts))))))]]]]
   [:footer {:id "addendum"}
    [:div {:class "sleeve"}
-    [:p {:id "copyright"} "Copyright © 2012–2013 Ram Krishnan"]]]
+    [:p {:id "copyright"} "Copyright © 2012–2015 Ram Krishnan"]]]
 
   (when-let [disqus-url (:disqus-forum-url config)]
     [:div {:id "disqus"} 

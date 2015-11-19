@@ -3,7 +3,7 @@
  :site-url "http://kriyative.github.com"
  :author-name "Ram Krishnan"
  :author-email "kriyative at gmail.com"
- :copyright-year "2013"
+ :copyright-year "2015"
  ;; :in-dir - Directory containing site content by default resources/
  :out-dir "./"
  ;; :default-template - Default template to use.
