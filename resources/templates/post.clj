@@ -5,6 +5,6 @@
      (:title metadata)
      [:a {:href (:post-url metadata)} (:title metadata)])]
   [:p {:class "post-meta"}
-   "Posted on " (:publish-date metadata)]]
+   (:publish-date metadata)]]
  [:div {:class "post-content"} content]
  [:footer {:class "post-footer"}]]
